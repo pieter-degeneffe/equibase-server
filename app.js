@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 //const morgan = require('morgan');
 const mongoose = require('mongoose');
+const basicAuth = require('express-basic-auth')
 require('dotenv').config();
 
  // create the express app
@@ -15,16 +16,19 @@ const app = express()
 app.use(bodyParser.json())
 app.use(cors())
 
+app.use(basicAuth({
+    users: { 'admin': process.env.BASIC_AUTH_PASSWORD }
+}))
+
 //Connect to database
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useUnifiedTopology', true);
 mongoose.set('useFindAndModify', false);
 mongoose.connect(process.env.MONGODB_URI);
 
-//Routes
+//Mounting of routes
 const horse = require('./routes/api/horse');
 app.use('/api/horse', horse);
-
 // const customer = require('./routes/api/customer');
 // app.use('/api/customer', customer);
 
