@@ -45,7 +45,7 @@ mongoose.set('useUnifiedTopology', true);
 mongoose.set('useFindAndModify', false);
 mongoose.connect(process.env.MONGODB_URI);
 
-app.use('/', authCheck);
+//app.use('/', authCheck);
 
 //Mounting of routes
 const horse = require('./routes/api/horse');

@@ -4,14 +4,17 @@ const Schema = mongoose.Schema;
 let horseSchema = new Schema({
   name: {
     type: String,
-    required: [true, 'Horse name is a required field']
+    required: [true, 'Horse name is a required field'],
+    maxlength: [128, 'Max length is 128 characters']
   },
   type: {
     type: String,
-    enum: ['mare','stallion']
+    enum: ['mare','stallion'],
+    maxlength: [128, 'Max length is 128 characters']
   },
   ueln: {
-    type: String
+    type: String,
+    maxlength: [15, 'Max length is 15 characters']
   },
   date_of_birth: {
     type: Date,
@@ -21,13 +24,16 @@ let horseSchema = new Schema({
     type: String
   },
   father: {
-    type: String
+    type: String,
+    maxlength: [128, 'Max length is 128 characters']
   },
   mother: {
-    type: String
+    type: String,
+    maxlength: [128, 'Max length is 128 characters']
   },
   grandfather: {
-    type: String
+    type: String,
+    maxlength: [128, 'Max length is 128 characters']
   },
   coat_color: {
     type: String,
