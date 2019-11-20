@@ -12,6 +12,11 @@ let horseSchema = new Schema({
     enum: ['mare','stallion'],
     maxlength: [128, 'Max length is 128 characters']
   },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'Customer',
+    required: true
+  },
   ueln: {
     type: String,
     maxlength: [15, 'Max length is 15 characters']
