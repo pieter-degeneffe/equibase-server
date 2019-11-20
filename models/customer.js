@@ -12,6 +12,12 @@ let customerSchema = new Schema({
     required: [true, 'Customer last_name is required'],
     maxlength: [128, 'Max length is 128 characters']
   },
+  horses : [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref:'Horse'
+    }
+  ],
   create_date: {
     type: Date,
     default: Date.now

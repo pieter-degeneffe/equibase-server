@@ -32,6 +32,19 @@ exports.displayAllCustomers = async (req, res, next) => {
   }
 };
 
+//Update an existing customer
+exports.updateCustomer = async (req, res, next) => {
+  try {
+    const response = await Customer.findByIdAndUpdate(req.params.id, {$set: req.body.customer}, (err, customer) => {
+      if (err) return next(err);
+      res.status(201).send(customer);
+    });
+  }
+  catch(err) {
+    return res.status(500).send(err);
+  }
+};
+
 //Display a specific horse
 // exports.displaySpecificHorse = async (req,res,next) => {
 //   try {

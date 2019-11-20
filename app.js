@@ -50,8 +50,8 @@ mongoose.connect(process.env.MONGODB_URI);
 //Mounting of routes
 const horse = require('./routes/api/horse');
 app.use('/api/horse', horse);
-// const customer = require('./routes/api/customer');
-// app.use('/api/customer', customer);
+const customer = require('./routes/api/customer');
+app.use('/api/customer', customer);
 
 // Start the server
 app.listen(PORT || 8081, () => {
