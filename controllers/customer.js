@@ -21,7 +21,7 @@ exports.createCustomer = async (req, res, next) => {
 };
 
 //Display list of all Customers
-exports.displayAllCustomers = async (req, res, next) => {
+exports.getAllCustomers = async (req, res, next) => {
   try {
     await Customer.find({}, (err, customers) => {
       if (err) res.status(404).send();
@@ -30,6 +30,25 @@ exports.displayAllCustomers = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
+};
+
+//Display a specific customer
+exports.getCustomer = async (req,res,next) => {
+  try {
+    await Customer.findById(req.params.id, (err, customer) => {
+      if (err) res.status(404).send();
+      res.status(200).send(customer);
+    });
+  }
+  catch(err) {
+    return res.status(500).send(err);
+  }
+};
+
+//Display the horses of a specific customer
+exports.getHorsesOfCustomer = async (req,res,next) => {
+  const horsesByCustomer = await Customer.findById(req.params.id).populate('horses');
+  res.status(200).send(horsesByCustomer);
 };
 
 //Update an existing customer

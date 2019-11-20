@@ -27,7 +27,7 @@ exports.createHorse = async (req, res, next) => {
 };
 
 //Display list of all Horses
-exports.displayAllHorses = async (req, res, next) => {
+exports.getAllHorses = async (req, res, next) => {
   try {
     await Horse.find({}, (err, horses) => {
       if (err) res.status(404).send();
@@ -39,7 +39,7 @@ exports.displayAllHorses = async (req, res, next) => {
 };
 
 //Display a specific horse
-exports.displaySpecificHorse = async (req,res,next) => {
+exports.getHorse = async (req,res,next) => {
   try {
     await Horse.findById(req.params.id, (err, horse) => {
       if (err) res.status(404).send();
