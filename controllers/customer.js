@@ -3,12 +3,13 @@ const Customer = require('../models/customer.js');
 //Create a new customer
 exports.createCustomer = async (req, res, next) => {
   try {
-    let customer = new Customer(
-      {
-        first_name: req.body.first_name,
-        last_name: req.body.last_name
-      }
-    );
+    let customer = new Customer(req.body);
+    // let customer = new Customer(
+    //   {
+    //     first_name: req.body.first_name,
+    //     last_name: req.body.last_name
+    //   }
+    // );
     console.log(customer);
     await customer.save((err) => {
       if (err) return next(err);
@@ -47,14 +48,21 @@ exports.getCustomer = async (req,res,next) => {
 
 //Display the horses of a specific customer
 exports.getHorsesOfCustomer = async (req,res,next) => {
-  const horsesByCustomer = await Customer.findById(req.params.id).populate('horses');
-  res.status(200).send(horsesByCustomer);
+  try {
+    const horsesByCustomer = await Customer.findById(req.params.id).populate('horses').exec(function(err, horsesByCustomer) {
+      if (err) return next(err);
+      res.status(200).send(horsesByCustomer.horses);
+    })
+  }
+  catch(err) {
+    return res.status(500).send(err);
+  }
 };
 
 //Update an existing customer
 exports.updateCustomer = async (req, res, next) => {
   try {
-    const response = await Customer.findByIdAndUpdate(req.params.id, {$set: req.body.customer}, (err, customer) => {
+    const response = await Customer.findOneAndUpdate(req.params.id, {$set: req.body.customer}, (err, customer) => {
       if (err) return next(err);
       res.status(201).send(customer);
     });
@@ -63,34 +71,3 @@ exports.updateCustomer = async (req, res, next) => {
     return res.status(500).send(err);
   }
 };
-
-//Display a specific horse
-// exports.displaySpecificHorse = async (req,res,next) => {
-//   try {
-//     await Horse.findById(req.params.id, (err, horse) => {
-//       if (err) res.status(404).send();
-//       res.status(201).send(horse);
-//     });
-//   }
-//   catch(err) {
-//     return res.status(500).send(err);
-//   }
-// };
-//
-
-//
-// //Update an existing horse
-// exports.updateHorse = (req, res, next) => {
-//   Horse.findByIdAndUpdate(req.params.id, {$set: req.body}, (err, horse) => {
-//     if (err) return next(err);
-//     res.send('Product updated.');
-//   });
-// };
-//
-// //Delete an existing Horse
-// exports.deleteHorse = (req,res,next) => {
-//   Horse.findByIdAndDelete(req.params.id, (err, horse) => {
-//     if (err) return next(err);
-//     res.send(`The horse was succesfully deleted`);
-//   });
-// };
