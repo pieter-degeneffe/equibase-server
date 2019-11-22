@@ -72,7 +72,7 @@ let customerSchema = new Schema({
   horses : [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref:'Horse'
+      ref: 'Horse'
     }
   ]
 }, {timestamps: true});

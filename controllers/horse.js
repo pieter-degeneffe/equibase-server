@@ -54,6 +54,7 @@ exports.getHorse = async (req,res,next) => {
 //Update an existing horse
 exports.updateHorse = async (req, res, next) => {
   try {
+    console.log(req.body.horse);
     const response = await Horse.findByIdAndUpdate(req.params.id, {$set: req.body.horse}, (err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);

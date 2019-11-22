@@ -43,6 +43,10 @@ let horseSchema = new Schema({
   coat_color: {
     type: String,
     enum: ['vos','zwart','bruin']
+  },
+  owner : {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Customer'
   }
 }, {timestamps: true});
 module.exports = mongoose.model('Horse', horseSchema);

@@ -4,12 +4,6 @@ const Customer = require('../models/customer.js');
 exports.createCustomer = async (req, res, next) => {
   try {
     let customer = new Customer(req.body);
-    // let customer = new Customer(
-    //   {
-    //     first_name: req.body.first_name,
-    //     last_name: req.body.last_name
-    //   }
-    // );
     console.log(customer);
     await customer.save((err) => {
       if (err) return next(err);
@@ -65,6 +59,19 @@ exports.updateCustomer = async (req, res, next) => {
     const response = await Customer.findOneAndUpdate(req.params.id, {$set: req.body.customer}, (err, customer) => {
       if (err) return next(err);
       res.status(201).send(customer);
+    });
+  }
+  catch(err) {
+    return res.status(500).send(err);
+  }
+};
+
+//Delete an existing Horse
+exports.deleteCustomer = async (req,res,next) => {
+  try {
+    Customer.findByIdAndDelete(req.params.id, (err, customer) => {
+      if (err) return next(err);
+      res.status(200).send(`The customer was succesfully deleted`);
     });
   }
   catch(err) {
