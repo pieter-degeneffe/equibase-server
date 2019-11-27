@@ -34,6 +34,12 @@ let customerSchema = new Schema({
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
     index: true
   },
+  telephone: {
+    type: String,
+    trim: true,
+    maxlength: [64, 'Max length is 64 characters'],
+    lowercase: true
+  },
   street: {
     type: String,
     trim: true,
