@@ -1,4 +1,5 @@
 const Customer = require('../models/customer.js');
+const Horse = require('../models/horse.js');
 
 //Create a new customer
 exports.createCustomer = async (req, res, next) => {
@@ -15,7 +16,7 @@ exports.createCustomer = async (req, res, next) => {
   }
 };
 
-//Display list of all Customers
+//Get all Customers
 exports.getAllCustomers = async (req, res, next) => {
   try {
     await Customer.find({}, (err, customers) => {
@@ -27,7 +28,7 @@ exports.getAllCustomers = async (req, res, next) => {
   }
 };
 
-//Display a specific customer
+//Get a specific customer
 exports.getCustomer = async (req,res,next) => {
   try {
     await Customer.findById(req.params.id, (err, customer) => {
@@ -40,12 +41,13 @@ exports.getCustomer = async (req,res,next) => {
   }
 };
 
-//Display the horses of a specific customer
+//Get the horses of a specific customer
 exports.getHorsesOfCustomer = async (req,res,next) => {
   try {
-    const horsesByCustomer = await Customer.findById(req.params.id).populate('horses').exec(function(err, horsesByCustomer) {
+    // console.log("succes");
+    const horsesByCustomer = await Horse.find({owner: req.params.id}).exec(function(err, horses) {
       if (err) return next(err);
-      res.status(200).send(horsesByCustomer.horses);
+      res.status(200).send(horses);
     })
   }
   catch(err) {
@@ -59,6 +61,21 @@ exports.updateCustomer = async (req, res, next) => {
     const response = await Customer.findOneAndUpdate(req.params.id, {$set: req.body.customer}, (err, customer) => {
       if (err) return next(err);
       res.status(201).send(customer);
+      console.log(customer);
+    });
+  }
+  catch(err) {
+    return res.status(500).send(err);
+  }
+};
+
+//Update the horse of an existing customer
+exports.updateHorseOfCustomer = async (req, res, next) => {
+  try {
+    const response = await Customer.findOneAndUpdate(req.params.id, (err, horse) => {
+      if (err) return next(err);
+      res.status(201).send(customer);
+      console.log(customer);
     });
   }
   catch(err) {
