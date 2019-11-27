@@ -75,12 +75,12 @@ let customerSchema = new Schema({
     maxlength: [64, 'Max length is 64 characters'],
     match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid country']
   },
-  horses : [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Horse'
-    }
-  ]
+  // horses : [
+  //   {
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: 'Horse'
+  //   }
+  // ]
 }, {timestamps: true});
 
 module.exports = mongoose.model('Customer', customerSchema);
