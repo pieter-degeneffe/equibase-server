@@ -83,8 +83,4 @@ let customerSchema = new Schema({
   ]
 }, {timestamps: true});
 
-customerSchema.virtual('name').get(function () {
-  return this.first_name + ', ' + this.last_name;
-});
-
 module.exports = mongoose.model('Customer', customerSchema);
