@@ -4,8 +4,7 @@ const Horse = require('../models/horse.js');
 //Create a new customer
 exports.createCustomer = async (req, res, next) => {
   try {
-    let customer = new Customer(req.body);
-    console.log(customer);
+    let customer = new Customer(req.body.customer);
     await customer.save((err) => {
       if (err) return next(err);
       res.status(201).send(customer);
@@ -58,7 +57,7 @@ exports.getHorsesOfCustomer = async (req,res,next) => {
 //Update an existing customer
 exports.updateCustomer = async (req, res, next) => {
   try {
-    const response = await Customer.findOneAndUpdate(req.params.id, {$set: req.body.customer}, (err, customer) => {
+    const response = await Customer.findByIdAndUpdate(req.params.id, {$set: req.body.customer}, (err, customer) => {
       if (err) return next(err);
       res.status(201).send(customer);
       console.log(customer);
@@ -94,4 +93,10 @@ exports.deleteCustomer = async (req,res,next) => {
   catch(err) {
     return res.status(500).send(err);
   }
+};
+
+//Get countries
+exports.getCountries = (req, res, next) => {
+  const countries = Customer.schema.path('country').enumValues;
+  res.status(201).send(countries);
 };

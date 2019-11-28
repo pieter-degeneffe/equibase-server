@@ -13,7 +13,6 @@ exports.createHorse = async (req, res, next) => {
         father: req.body.father,
         mother: req.body.mother,
         grandfather: req.body.grandfather,
-        adjusted_date: Date.now
       }
     );
     await horse.save((err) => {
