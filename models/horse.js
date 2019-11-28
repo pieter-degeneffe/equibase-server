@@ -6,11 +6,11 @@ let horseSchema = new Schema({
     type: String,
     trim: true,
     required: [true, 'Horse name is a required field'],
-    maxlength: [128, 'Max length is 128 characters']
+    maxlength: [64, 'Max length is 64 characters']
   },
   type: {
     type: String,
-    enum: ['mare','stallion']
+    enum: ['hengst','merrie']
   },
   ueln: {
     type: String,
@@ -28,17 +28,17 @@ let horseSchema = new Schema({
   father: {
     type: String,
     trim: true,
-    maxlength: [128, 'Max length is 128 characters']
+    maxlength: [64, 'Max length is 64 characters']
   },
   mother: {
     type: String,
     trim: true,
-    maxlength: [128, 'Max length is 128 characters']
+    maxlength: [64, 'Max length is 64 characters']
   },
   grandfather: {
     type: String,
     trim: true,
-    maxlength: [128, 'Max length is 128 characters']
+    maxlength: [64, 'Max length is 64 characters']
   },
   coat_color: {
     type: String,
