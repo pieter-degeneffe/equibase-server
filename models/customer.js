@@ -70,10 +70,8 @@ let customerSchema = new Schema({
   },
   country: {
     type: String,
-    trim: true,
-    lowercase: true,
-    maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid country']
+    required: [true, 'Country is required'],
+    enum: ['Afghanistan','Albanië','Algerije','Andorra','Angola','Antigua-Barbuda','Argentinië','Armenië','Aruba','Australië','Azerbaijan','Bahamas','Bahrein','Belize','België','Bermuda','Bolivia','Bosnië-Herzegovina','Botswana','Brazilië','Brunei Darussalam','Bulgarije','Burundi','Cambodja','Cameroen','Canada','Cayman Eilanden','Centraal-Afrikaanse Republiek','Chili','China','Ciprus','Colombia','Congo','Cook Eilanden','Costa Rica','Groatië','Cuba','Cyprus','Denemarken','Dominica','Dominicaanse Republiek','DR Congo','Duitsland','Ecuador','Egypte','El Salvador','Eritrea','Estland','Ethiopië','Fiji','Filipijnen','Finland','Frankrijk','Frans Polynesië','Gabon','Gambia','Georgië','Ghana','Griekenland','Groenland','Guam','Guatemala','Guinee-Bissau','Guyana','Haïti','Honduras','Hongarije','Ierland','IJsland','India','Indonesië','Irak','Iran','Israël','Italië','Ivoorkust','Jamaica','Japan','Jemen','Joegoslavië','Jordanië','Kameroen','Kazachstan','Kenya','Kirgizstan','Koeweit','Korea','Kroatië','Laos','Lesotho','Letland','Libanon','Liberia','Libië','Liechtenstein','Litouwen','Luxemburg','Macedonië','Maleisië','Mali','Malta','Marokko','Mauritanië','Mauritius','Mexico','Moldova','Monaco','Mozambique','Namibië','Nederland','Nepal','Nicaragua','Nieuw Zeeland','Niger','Nigeria','Noorwegen','Oezbekistan','Oman','Oostenrijk','Pakistan','Papoea-Nieuw-Guinea','Paraguay','Peru','Polen','Portugal','Puerto Rico','Quatar','Roemenië','Rusland','Rwanda','Saint Lucia','Salomonseilanden','San Marino','Saudi-Arabië','Schotland','Senegal','Sierra Leone','Singapore','Slovenië','Slowakije','Somalië','Spanje','Sri Lanka','Sudan','Syrie','Tadzjikistan','Taiwan','Thailand','Tobago','Tsjechië','Tsjaad','Tunesië','Turkije','Turkmenistan','Trinidad','Uganda','Ukraine','Uruguay','Venezuela','Verenigd Koninkrijk','Verenigde Staten','Vietnam','Zaïre','Zambia','Zimbabwe','Zuid-Afrika','Zweden','Zwitserland']
   },
   // horses : [
   //   {
