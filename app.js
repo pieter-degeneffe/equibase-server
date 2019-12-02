@@ -46,7 +46,7 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.connect(process.env.MONGODB_URI);
 
-//app.use('/', authCheck);
+app.use('/', authCheck);
 
 //Mounting of routes
 const horse = require('./routes/api/horse');
