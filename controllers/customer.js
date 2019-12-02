@@ -23,7 +23,19 @@ exports.getAllCustomers = async (req, res, next) => {
       res.status(201).json(customers);
     });
   } catch (err) {
-    return next(err);
+    return res.status(500).send(err);
+  }
+};
+
+//Get customer count
+exports.getCustomerCount = async (req, res, next) => {
+  try {
+    await Customer.countDocuments({}, (err, count) => {
+      if (err) res.status(404).send();
+      res.status(201).json(count);
+    });
+  } catch(err) {
+    return res.status(500).send(err);
   }
 };
 
