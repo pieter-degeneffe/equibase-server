@@ -3,6 +3,7 @@ const router = express.Router();
 const horseController = require('../../controllers/horse.js');
 
 router.get('/', horseController.getAllHorses);
+router.get('/count', horseController.getHorseCount);
 router.get('/:id', horseController.getHorse);
 router.post('/', horseController.createHorse);
 router.put('/:id', horseController.updateHorse);
