@@ -25,7 +25,7 @@ exports.createHorse = async (req, res, next) => {
   }
 };
 
-//Display list of all Horses
+//Get all Horses
 exports.getAllHorses = async (req, res, next) => {
   try {
     await Horse.find({}, (err, horses) => {
@@ -34,6 +34,18 @@ exports.getAllHorses = async (req, res, next) => {
     });
   } catch (err) {
     return next(err);
+  }
+};
+
+//Get horse count
+exports.getHorseCount = async (req, res, next) => {
+  try {
+    await Horse.countDocuments({}, (err, count) => {
+      if (err) res.status(404).send();
+      res.status(201).json(count);
+    });
+  } catch(err) {
+    return res.status(500).send(err);
   }
 };
 
