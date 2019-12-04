@@ -1,5 +1,4 @@
 const Customer = require('../models/customer.js');
-const Horse = require('../models/horse.js');
 
 //Create a new customer
 exports.createCustomer = async (req, res, next) => {
@@ -20,7 +19,7 @@ exports.getAllCustomers = async (req, res, next) => {
   try {
     await Customer.find({}, (err, customers) => {
       if (err) res.status(404).send();
-      res.status(201).json(customers);
+      res.status(201).send(customers);
     });
   } catch (err) {
     return res.status(500).send(err);
@@ -53,18 +52,18 @@ exports.getCustomer = async (req,res,next) => {
 };
 
 //Get the horses of a specific customer
-exports.getHorsesOfCustomer = async (req,res,next) => {
-  try {
-    // console.log("succes");
-    const horsesByCustomer = await Horse.find({owner: req.params.id}).exec(function(err, horses) {
-      if (err) return next(err);
-      res.status(200).send(horses);
-    })
-  }
-  catch(err) {
-    return res.status(500).send(err);
-  }
-};
+// exports.getHorsesOfCustomer = async (req,res,next) => {
+//   try {
+//     // console.log("succes");
+//     const horsesByCustomer = await Horse.find({owner: req.params.id}).exec(function(err, horses) {
+//       if (err) return next(err);
+//       res.status(200).send(horses);
+//     })
+//   }
+//   catch(err) {
+//     return res.status(500).send(err);
+//   }
+// };
 
 //Update an existing customer
 exports.updateCustomer = async (req, res, next) => {
