@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let customerSchema = new Schema({
+  type: {
+    type: String,
+    required: [true, 'Customer type  is required'],
+    enum: ['particulier','bedrijf']
+  },
   first_name: {
     type: String,
     trim: true,
