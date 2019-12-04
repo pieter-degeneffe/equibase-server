@@ -41,4 +41,4 @@ let ownerSchema = new Schema({
     enum: ['vos','zwart','bruin']
   }
 }, {timestamps: true});
-module.exports = mongoose.model('Horse', horseSchema);
+module.exports = mongoose.model('Contact', contactSchema);
