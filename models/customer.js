@@ -33,6 +33,12 @@ let customerSchema = new Schema({
     match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid company name'],
     index: true
   },
+  tva: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    maxlength: [14, 'Max length is 14 characters'],
+  },
   language: {
     type: String,
     required: [true, 'Language  is required'],
