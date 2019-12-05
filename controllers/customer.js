@@ -93,7 +93,7 @@ exports.updateHorseOfCustomer = async (req, res, next) => {
   }
 };
 
-//Delete an existing Horse
+//Delete a Customer
 exports.deleteCustomer = async (req,res,next) => {
   try {
     Customer.findByIdAndDelete(req.params.id, (err, customer) => {
@@ -105,6 +105,46 @@ exports.deleteCustomer = async (req,res,next) => {
     return res.status(500).send(err);
   }
 };
+
+//Add a contact to a customer
+exports.addContact = async (req,res,next) => {
+  try {
+    var opts = { runValidators: true };
+    Customer.findByIdAndUpdate(req.params.id, {$push: {contacts: req.body}}, opts, (err, customer) => {
+      if (err) return next(err);
+      res.status(200).send(`The contact was succesfully added`);
+    });
+  } catch(err) {
+    return res.status(500).send(err);
+  }
+}
+
+//Update the contact of a customer
+exports.updateContact = async (req,res,next) => {
+  try {
+    await Customer.findById(req.params.id, (err, customer) => {
+      const contact = customer.contacts.id(req.params.contactId);
+      contact.set(req.body);
+      customer.save().then(function(savedPost) {
+        res.send(savedPost);
+      }).catch(function(err) {
+        res.status(500).send(err);
+      });
+    });
+  } catch(err) {
+    return res.status(500).send(err);
+  }
+}
+//Remove a contact from a customer
+exports.deleteContact = async (req,res,next) => {
+  try {
+    Customer.findByIdAndUpdate(req.params.id, {$pull: {contacts: {_id: req.params.contactId}}}, (err, customer) => {
+      res.status(200).send(`The contact was succesfully removed`);
+    });
+  } catch(err) {
+    return res.status(500).send(err);
+  }
+}
 
 //Get countries
 exports.getCountries = (req, res, next) => {
