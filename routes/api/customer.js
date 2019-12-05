@@ -10,5 +10,7 @@ router.get('/:id', customerController.getCustomer);
 // router.get('/:id/horse', customerController.getHorsesOfCustomer);
 router.put('/:id', customerController.updateCustomer);
 router.delete('/:id', customerController.deleteCustomer);
-
+router.post('/:id/contact', customerController.addContact);
+router.put('/:id/contact/:contactId', customerController.updateContact);
+router.delete('/:id/contact/:contactId', customerController.deleteContact);
 module.exports = router;
