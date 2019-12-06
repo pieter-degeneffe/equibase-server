@@ -5,7 +5,6 @@ let contactSchema = new Schema({
   first_name: {
     type: String,
     trim: true,
-    lowercase: true,
     required: [true, 'First name of contact is required'],
     maxlength: [64, 'Max length is 64 characters'],
     match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid first name']
@@ -13,7 +12,6 @@ let contactSchema = new Schema({
   last_name: {
     type: String,
     trim: true,
-    lowercase: true,
     required: true,
     required: [true, 'Last name of contact is required'],
     maxlength: [64, 'Max length is 64 characters'],
@@ -47,7 +45,6 @@ let customerSchema = new Schema({
   first_name: {
     type: String,
     trim: true,
-    lowercase: true,
     required: [true, 'First name is required'],
     maxlength: [64, 'Max length is 64 characters'],
     match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid first name'],
@@ -56,7 +53,6 @@ let customerSchema = new Schema({
   last_name: {
     type: String,
     trim: true,
-    lowercase: true,
     required: [true, 'Last name is required'],
     maxlength: [64, 'Max length is 64 characters'],
     match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid last name'],
@@ -65,7 +61,6 @@ let customerSchema = new Schema({
   company: {
     type: String,
     trim: true,
-    lowercase: true,
     maxlength: [64, 'Max length is 64 characters'],
     match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid company name'],
     index: true
@@ -100,28 +95,24 @@ let customerSchema = new Schema({
   street: {
     type: String,
     trim: true,
-    lowercase: true,
     maxlength: [32, 'Max length is 32 characters'],
     match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid street']
   },
   house_number: {
     type: String,
     trim: true,
-    lowercase: true,
     maxlength: [16, 'Max length is 16 characters'],
     match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid house number']
   },
   zip: {
     type: String,
     trim: true,
-    lowercase: true,
     maxlength: [8, 'Max length is 8 characters'],
     match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid ZIP code']
   },
   city: {
     type: String,
     trim: true,
-    lowercase: true,
     maxlength: [32, 'Max length is 32 characters'],
     match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid city']
   },
