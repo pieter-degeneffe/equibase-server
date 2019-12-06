@@ -8,8 +8,7 @@ let contactSchema = new Schema({
     lowercase: true,
     required: [true, 'First name of contact is required'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid first name'],
-    index: true
+    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid first name']
   },
   last_name: {
     type: String,
@@ -18,17 +17,14 @@ let contactSchema = new Schema({
     required: true,
     required: [true, 'Last name of contact is required'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid last name'],
-    index: true
+    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid last name']
   },
   email: {
     type: String,
     trim: true,
     lowercase: true,
-    unique: true,
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
-    index: true
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
   },
   telephone: {
     type: String,
@@ -71,7 +67,7 @@ let customerSchema = new Schema({
     trim: true,
     lowercase: true,
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid company name'],
+    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid company name'],
     index: true
   },
   tva: {
@@ -89,7 +85,7 @@ let customerSchema = new Schema({
     type: String,
     trim: true,
     lowercase: true,
-    unique: true,
+    unique: [true, 'Er bestaat al een klant met dit e-mail adres'],
     required: [true, 'Email address  is required'],
     maxlength: [64, 'Max length is 64 characters'],
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
