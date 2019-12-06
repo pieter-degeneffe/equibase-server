@@ -109,8 +109,9 @@ exports.deleteCustomer = async (req,res,next) => {
 //Add a contact to a customer
 exports.addContact = async (req,res,next) => {
   try {
+    console.log(req.body);
     var opts = { runValidators: true };
-    Customer.findByIdAndUpdate(req.params.id, {$push: {contacts: req.body}}, opts, (err, customer) => {
+    Customer.findByIdAndUpdate(req.params.id, {$push: {contacts: req.body.contact}}, opts, (err, customer) => {
       if (err) return next(err);
       res.status(200).send(`The contact was succesfully added`);
     });
@@ -122,9 +123,10 @@ exports.addContact = async (req,res,next) => {
 //Update the contact of a customer
 exports.updateContact = async (req,res,next) => {
   try {
+    console.log(req.body);
     await Customer.findById(req.params.id, (err, customer) => {
       const contact = customer.contacts.id(req.params.contactId);
-      contact.set(req.body);
+      contact.set(req.body.contact);
       customer.save().then(function(savedPost) {
         res.send(savedPost);
       }).catch(function(err) {
