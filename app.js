@@ -9,6 +9,7 @@ const cors = require('cors');
 //const morgan = require('morgan');
 const mongoose = require('mongoose');
 require('dotenv').config();
+const { handleError } = require('./helpers/error')
 
 // Set up Auth0 configuration
 const authConfig = require("./auth_config.json");
@@ -53,6 +54,11 @@ const horse = require('./routes/api/horse');
 app.use('/api/horse', horse);
 const customer = require('./routes/api/customer');
 app.use('/api/customer', customer);
+
+//Error handling middleware
+app.use((err, req, res, next) => {
+  handleError(err, res);
+});
 
 // Start the server
 app.listen(PORT || 8081, () => {
