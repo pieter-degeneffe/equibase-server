@@ -1,4 +1,5 @@
 const Customer = require('../models/customer.js');
+const Horse = require('../models/horse.js');
 
 //Create a new customer
 exports.createCustomer = async (req, res, next) => {
@@ -55,7 +56,6 @@ exports.getCustomer = async (req,res,next) => {
 // Get the horses of a specific customer
 exports.getHorsesOfCustomer = async (req,res,next) => {
   try {
-    // console.log("succes");
     const horsesByCustomer = await Horse.find({owner: req.params.id}).exec(function(err, horses) {
       if (err) return next(err);
       res.status(200).send(horses);
