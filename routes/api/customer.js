@@ -7,7 +7,7 @@ router.get('/', customerController.getAllCustomers);
 router.get('/count', customerController.getCustomerCount);
 router.get('/countries', customerController.getCountries);
 router.get('/:id', customerController.getCustomer);
-// router.get('/:id/horse', customerController.getHorsesOfCustomer);
+router.get('/:id/horse', customerController.getHorsesOfCustomer);
 router.put('/:id', customerController.updateCustomer);
 router.delete('/:id', customerController.deleteCustomer);
 router.post('/:id/contact', customerController.addContact);
