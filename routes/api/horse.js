@@ -8,6 +8,7 @@ router.get('/:id', horseController.getHorse);
 router.post('/', horseController.createHorse);
 router.put('/:id', horseController.updateHorse);
 router.delete('/:id', horseController.deleteHorse);
-
+router.post('/:id/passport', horseController.createPassport);
+router.delete('/:id/passport', horseController.deletePassport);
 
 module.exports = router;
