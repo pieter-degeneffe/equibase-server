@@ -44,6 +44,12 @@ let horseSchema = new Schema({
     type: String,
     enum: ['vos','zwart','bruin']
   },
+  surrogate: {
+    type: Boolean
+  },
+  passport: {
+    type: String
+  },
   owner : {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Horse'
