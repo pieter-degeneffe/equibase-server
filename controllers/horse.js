@@ -1,20 +1,9 @@
 const Horse = require('../models/horse.js');
-
+var fs = require('fs');
 //Create a new horse
 exports.createHorse = async (req, res, next) => {
   try {
-    let horse = new Horse(
-      {
-        name: req.body.name,
-        type: req.body.type,
-        ueln: req.body.ueln,
-        coat_color: req.body.coat_color,
-        studbook_number: req.body.studbook_number,
-        father: req.body.father,
-        mother: req.body.mother,
-        grandfather: req.body.grandfather,
-      }
-    );
+    let horse = new Horse(req.body.horse);
     await horse.save((err) => {
       if (err) return next(err);
       res.status(201).send(horse);
@@ -65,7 +54,6 @@ exports.getHorse = async (req,res,next) => {
 //Update an existing horse
 exports.updateHorse = async (req, res, next) => {
   try {
-    console.log(req.body.horse);
     const response = await Horse.findByIdAndUpdate(req.params.id, {$set: req.body.horse}, (err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
@@ -88,3 +76,30 @@ exports.deleteHorse = async (req,res,next) => {
     return res.status(500).send(err);
   }
 };
+
+//Create a new Passport
+exports.createPassport = async (req, res, next) => {
+  let file = req.files.file;
+  let filename = 'files/horse/passport/' + req.params.id +'.pdf';
+  file.mv('public/' + filename, function(err) {
+    if (err) return res.status(500).send(err);
+    Horse.findByIdAndUpdate(req.params.id, {$set: { passport: filename}}, { new: true }, (err, horse) => {
+      if (err) return next(err);
+      res.status(201).send(horse);
+      console.log(horse);
+    });
+  });
+};
+
+exports.deletePassport = (req, res, next) => {
+  console.log(req.params.id);
+  let filename = 'public/files/horse/passport/' + req.params.id +'.pdf';
+  fs.unlink(filename, function() {
+    // if (err) return res.status(500).send(err);
+    Horse.findByIdAndUpdate(req.params.id, {$unset: { passport: 1}}, { new: true }, (err, horse) => {
+      if (err) return next(err);
+      res.status(201).send(horse);
+      console.log(horse);
+    });
+  });
+}
