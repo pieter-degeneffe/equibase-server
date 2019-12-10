@@ -10,6 +10,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const { handleError } = require('./helpers/error')
+const fileUpload = require('express-fileupload');
 
 // Set up Auth0 configuration
 const authConfig = require("./auth_config.json");
@@ -26,6 +27,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+app.use(fileUpload());
 
 // Middleware that validates incoming bearer tokens using JWKS from equibase.eu.auth0.com
 const authCheck = jwt({
@@ -59,6 +61,8 @@ app.use('/api/customer', customer);
 app.use((err, req, res, next) => {
   handleError(err, res);
 });
+
+app.use(express.static('public'))
 
 // Start the server
 app.listen(PORT || 8081, () => {
