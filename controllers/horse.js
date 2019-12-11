@@ -61,7 +61,7 @@ exports.getHorse = async (req,res,next) => {
 //Update an existing horse
 exports.updateHorse = async (req, res, next) => {
   try {
-    const response = await Horse.findByIdAndUpdate(req.params.id, {$set: req.body.horse}, (err, horse) => {
+    const response = await Horse.findByIdAndUpdate(req.params.id, {$set: req.body.horse}, { new: true }, (err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
     });
@@ -93,20 +93,17 @@ exports.createPassport = async (req, res, next) => {
     Horse.findByIdAndUpdate(req.params.id, {$set: { passport: filename}}, { new: true }, (err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
-      console.log(horse);
     });
   });
 };
 
 exports.deletePassport = (req, res, next) => {
-  console.log(req.params.id);
   let filename = 'public/files/horse/passport/' + req.params.id +'.pdf';
   fs.unlink(filename, function() {
     // if (err) return res.status(500).send(err);
     Horse.findByIdAndUpdate(req.params.id, {$unset: { passport: 1}}, { new: true }, (err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
-      console.log(horse);
     });
   });
 }
