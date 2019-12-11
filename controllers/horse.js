@@ -17,10 +17,17 @@ exports.createHorse = async (req, res, next) => {
 //Get all Horses
 exports.getAllHorses = async (req, res, next) => {
   try {
-    await Horse.find({}, (err, horses) => {
-      if (err) res.status(404).send();
-      res.status(201).json(horses);
-    });
+    if(!req.query.type) {
+      await Horse.find({}, (err, horses) => {
+        if (err) res.status(404).send();
+        res.status(201).json(horses);
+      });
+    } else {
+      await Horse.find({'type': req.query.type}, (err, horses) => {
+        if (err) res.status(404).send();
+        res.status(201).json(horses);
+      });
+    }
   } catch (err) {
     return next(err);
   }
