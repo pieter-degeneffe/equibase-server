@@ -56,6 +56,8 @@ const horse = require('./routes/api/horse');
 app.use('/api/horse', horse);
 const customer = require('./routes/api/customer');
 app.use('/api/customer', customer);
+const location = require('./routes/api/location');
+app.use('/api/location', location);
 
 //Error handling middleware
 app.use((err, req, res, next) => {
