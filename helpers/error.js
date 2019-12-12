@@ -13,7 +13,6 @@ const handleError = (err, res) => {
     statusCode,
     message
   });
-  console.log(err);
   // res.status(500).send('Something broke!')
 };
 module.exports = {
