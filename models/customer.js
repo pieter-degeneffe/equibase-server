@@ -32,7 +32,7 @@ let contactSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ['vos','zwart','bruin']
+    enum: ["Eigenaar bedrijf", "Boekhouder", "Transporteur", "Verantwoordelijke fokkerij"]
   }
 });
 
