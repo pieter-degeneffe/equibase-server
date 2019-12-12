@@ -19,6 +19,7 @@ let horseSchema = new Schema({
   },
   microchip: {
     type: String,
+    unique: [true, 'Er bestaat al een paard met dit microchip nummer'],
     required: [true, 'Microchip is a required field'],
   },
   date_of_birth: {
@@ -27,11 +28,11 @@ let horseSchema = new Schema({
   },
   studbook: {
     type: String,
-    enum: ['Aes','American Quarter Horse','Anglo-arabian','Arab','Bwp','Hannover','Holstein','Kwpn','Lusitana','Oldenburg','Others','Sbs','Sf','Stud-book Du Cheval De Selle Luxembourgeois (S.c.s.l.)','Westfalen','Zangersheide']
+    enum: ['Arabische volbloed (Arab)','American Quarter Horse (AQH)','Belgisch Warmbloedpaard (BWP)','SBS','SF','Trotteur Francais (TF)','Belgische Draver','Studbook Zangersheide (Z)','Studbook Du Cheval de Selle Luxembourgeois (SCSL)','Westfalen','Hannover','Oldenburg (OLD)','Anglo European Studbook (AES)','Koninklijk Nederlands Warmbloedpaard (KWPN)','Lusitana','Equipas','Andere']
   },
   coat_color: {
     type: String,
-    enum: ['vos','zwart','bruin']
+    enum: ['Bruin','Donkerbruin','Vos','Donkervos','Zwart','Schimmel','Wit','Bont','Palomino']
   },
   father: {
     type: String,
@@ -54,6 +55,13 @@ let horseSchema = new Schema({
   death: {
     type: Boolean
   },
+  date_of_death: {
+    type: Date,
+    max: [Date.now, "Date of birth can't be in the future"]
+  },
+  keep_for_food_chain: {
+    type: Boolean
+  },
   surrogate: {
     type: Boolean
   },
@@ -67,7 +75,8 @@ let horseSchema = new Schema({
   },
   owner : {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Horse'
+    ref: 'Horse',
+    required: [true, 'Eigenaar is a required field'],
   }
 }, {timestamps: true});
 module.exports = mongoose.model('Horse', horseSchema);
