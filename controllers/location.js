@@ -1,6 +1,8 @@
 const Location = require('../models/location.js');
+
 //Create a new location
 exports.createLocation = async (req, res, next) => {
+  console.log(req.body);
   try {
     let location = new Location(req.body.location);
     await location.save((err) => {
@@ -47,3 +49,16 @@ exports.updateLocation = async (req, res, next) => {
     return next(err);
   }
 };
+
+//Delete an existing location
+exports.deleteLocation = async (req, res, next) => {
+  try {
+    await Location.findByIdAndDelete(req.params.id, (err, location) => {
+      if (err) return next (err);
+      res.status(200).send(`The location was succesfully deleted`);
+    })
+  }
+  catch(err) {
+    return next(err);
+  }
+}
