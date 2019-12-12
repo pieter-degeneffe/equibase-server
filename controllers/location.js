@@ -29,7 +29,19 @@ exports.getLocation = async (req,res,next) => {
   try {
     await Location.findById(req.params.id, (err, location) => {
       if (err) return next(err);
-      res.status(200).send(location);
+      res.status(201).send(location);
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+//Update an existing location
+exports.updateLocation = async (req, res, next) => {
+  try {
+    await Location.findByIdAndUpdate(req.params.id, {$set: req.body.location}, { new: true }, (err, location) => {
+      if (err) return next(err);
+      res.status(201).send(location);
     });
   } catch (err) {
     return next(err);
