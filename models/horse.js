@@ -51,7 +51,7 @@ let horseSchema = new Schema({
   passport: {
     type: String
   },
-  status: {
+  death: {
     type: Boolean
   },
   surrogate: {
