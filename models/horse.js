@@ -17,8 +17,9 @@ let horseSchema = new Schema({
     trim: true,
     maxlength: [15, 'Max length is 15 characters']
   },
-  microship: {
-    type: String
+  microchip: {
+    type: String,
+    required: [true, 'Microchip is a required field'],
   },
   date_of_birth: {
     type: Date,
