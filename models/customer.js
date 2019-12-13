@@ -7,7 +7,7 @@ let contactSchema = new Schema({
     trim: true,
     required: [true, 'First name of contact is required'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid first name']
+    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid first name']
   },
   last_name: {
     type: String,
@@ -15,7 +15,7 @@ let contactSchema = new Schema({
     required: true,
     required: [true, 'Last name of contact is required'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid last name']
+    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid last name']
   },
   email: {
     type: String,
@@ -47,7 +47,7 @@ let customerSchema = new Schema({
     trim: true,
     required: [true, 'First name is required'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid first name'],
+    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid first name'],
     index: true
   },
   last_name: {
@@ -55,7 +55,7 @@ let customerSchema = new Schema({
     trim: true,
     required: [true, 'Last name is required'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid last name'],
+    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid last name'],
     index: true
   },
   company: {
@@ -86,7 +86,13 @@ let customerSchema = new Schema({
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
     index: true
   },
-  telephone: {
+  telephone_mobile: {
+    type: String,
+    trim: true,
+    maxlength: [16, 'Max length is 16 characters'],
+    lowercase: true
+  },
+  telephone_fixed: {
     type: String,
     trim: true,
     maxlength: [16, 'Max length is 16 characters'],
@@ -96,25 +102,25 @@ let customerSchema = new Schema({
     type: String,
     trim: true,
     maxlength: [32, 'Max length is 32 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid street']
+    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid street']
   },
   house_number: {
     type: String,
     trim: true,
     maxlength: [16, 'Max length is 16 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid house number']
+    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid house number']
   },
   zip: {
     type: String,
     trim: true,
     maxlength: [8, 'Max length is 8 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid ZIP code']
+    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid ZIP code']
   },
   city: {
     type: String,
     trim: true,
     maxlength: [32, 'Max length is 32 characters'],
-    match: [/^[a-zA-Z0-9]+$/, 'Please fill a valid city']
+    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid city']
   },
   country: {
     type: String,
