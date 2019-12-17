@@ -1,15 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
 
 let horseSchema = new Schema({
   name: {
     type: String,
     trim: true,
     required: [true, 'Horse name is a required field'],
-    maxlength: [64, 'Max length is 64 characters']
+    maxlength: [64, 'Max length is 64 characters'],
+    match: [/^[\w \.-]+$/, 'Please fill a valid first name'],
   },
   type: {
     type: String,
+    required: [true, 'Horse type is a required field'],
     enum: ['hengst','merrie']
   },
   ueln: {
@@ -77,8 +80,9 @@ let horseSchema = new Schema({
   },
   owner : {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Horse',
-    required: [true, 'Eigenaar is a required field'],
+    ref: 'Horse'
   }
 }, {timestamps: true});
+
+horseSchema.plugin(mongoose_fuzzy_searching, {fields: ['name', 'ueln', 'microchip']});
 module.exports = mongoose.model('Horse', horseSchema);
