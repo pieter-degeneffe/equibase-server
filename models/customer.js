@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
 
 let contactSchema = new Schema({
   first_name: {
@@ -7,7 +8,7 @@ let contactSchema = new Schema({
     trim: true,
     required: [true, 'First name of contact is required'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid first name']
+    match: [/^[\w \.-]+$/, 'Please fill a valid first name']
   },
   last_name: {
     type: String,
@@ -15,7 +16,7 @@ let contactSchema = new Schema({
     required: true,
     required: [true, 'Last name of contact is required'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid last name']
+    match: [/^[\w \.-]+$/, 'Please fill a valid last name']
   },
   email: {
     type: String,
@@ -47,7 +48,7 @@ let customerSchema = new Schema({
     trim: true,
     required: [true, 'First name is required'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid first name'],
+    match: [/^[\w \.-]+$/, 'Please fill a valid first name'],
     index: true
   },
   last_name: {
@@ -55,14 +56,14 @@ let customerSchema = new Schema({
     trim: true,
     required: [true, 'Last name is required'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid last name'],
+    match: [/^[\w \.-]+$/, 'Please fill a valid last name'],
     index: true
   },
   company: {
     type: String,
     trim: true,
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid company name'],
+    match: [/^[\w \.-]+$/, 'Please fill a valid company name'],
     index: true
   },
   tva: {
@@ -101,25 +102,25 @@ let customerSchema = new Schema({
     type: String,
     trim: true,
     maxlength: [32, 'Max length is 32 characters'],
-    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid street']
+    match: [/^[\w \.-]+$/, 'Please fill a valid street']
   },
   house_number: {
     type: String,
     trim: true,
     maxlength: [16, 'Max length is 16 characters'],
-    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid house number']
+    match: [/^[\w \.-]+$/, 'Please fill a valid house number']
   },
   zip: {
     type: String,
     trim: true,
     maxlength: [8, 'Max length is 8 characters'],
-    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid ZIP code']
+    match: [/^[\w \.-]+$/, 'Please fill a valid ZIP code']
   },
   city: {
     type: String,
     trim: true,
     maxlength: [32, 'Max length is 32 characters'],
-    match: [/^[a-zA-Z0-9 _]+$/, 'Please fill a valid city']
+    match: [/^[\w \.-]+$/, 'Please fill a valid city']
   },
   country: {
     type: String,
@@ -129,4 +130,5 @@ let customerSchema = new Schema({
   contacts : [contactSchema]
 }, {timestamps: true});
 
+customerSchema.plugin(mongoose_fuzzy_searching, {fields: ['first_name', 'last_name', 'company', 'email']});
 module.exports = mongoose.model('Customer', customerSchema);
