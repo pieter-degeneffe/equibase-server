@@ -18,7 +18,7 @@ let horseSchema = new Schema({
   ueln: {
     type: String,
     trim: true,
-    unique: [true, 'Er bestaat al een paard met dit UELN nummer'],
+    index:true,
     maxlength: [15, 'Max length is 15 characters']
   },
   microchip: {
