@@ -74,7 +74,7 @@ let horseSchema = new Schema({
     type: String,
     maxlength: [64, 'Max length is 64 characters']
   },
-  surrogate_location: {
+  location: {
     type: String,
     enum: ['locatie 1','locatie 2','locatie 3']
   },
