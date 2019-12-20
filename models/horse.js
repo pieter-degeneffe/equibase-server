@@ -8,7 +8,7 @@ let horseSchema = new Schema({
     trim: true,
     required: [true, 'Horse name is a required field'],
     maxlength: [64, 'Max length is 64 characters'],
-    match: [/^[\w \.-]+$/, 'Please fill a valid first name'],
+    match: [/^[\w \.'-]+$/, 'Please fill a valid first name'],
   },
   type: {
     type: String,
