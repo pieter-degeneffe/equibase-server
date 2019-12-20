@@ -24,8 +24,7 @@ let horseSchema = new Schema({
   microchip: {
     type: String,
     trim: true,
-    unique: [true, 'Er bestaat al een paard met dit microchip nummer'],
-    required: [true, 'Microchip is a required field'],
+    unique: [true, 'Er bestaat al een paard met dit microchip nummer']
   },
   date_of_birth: {
     type: Date,
