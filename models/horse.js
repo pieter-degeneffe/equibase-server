@@ -18,13 +18,12 @@ let horseSchema = new Schema({
   ueln: {
     type: String,
     trim: true,
-    index:true,
     maxlength: [15, 'Max length is 15 characters']
   },
   microchip: {
     type: String,
     trim: true,
-    unique: [true, 'Er bestaat al een paard met dit microchip nummer']
+    maxlength: [15, 'Max length is 15 characters']
   },
   date_of_birth: {
     type: Date,
@@ -83,5 +82,5 @@ let horseSchema = new Schema({
   }
 }, {timestamps: true});
 
-horseSchema.plugin(mongoose_fuzzy_searching, {fields: ['name', 'ueln', 'microchip']});
+horseSchema.plugin(mongoose_fuzzy_searching, {fields: ['name']});
 module.exports = mongoose.model('Horse', horseSchema);
