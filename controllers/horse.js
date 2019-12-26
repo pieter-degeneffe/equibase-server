@@ -1,5 +1,6 @@
 const Horse = require('../models/horse.js');
 var fs = require('fs');
+
 //Create a new horse
 exports.createHorse = async (req, res, next) => {
   try {
@@ -8,8 +9,7 @@ exports.createHorse = async (req, res, next) => {
       if (err) return next(err);
       res.status(201).send(horse);
     })
-  }
-  catch(err) {
+  } catch(err) {
     return res.status(500).send(err);
   }
 };
@@ -18,12 +18,16 @@ exports.createHorse = async (req, res, next) => {
 exports.getAllHorses = async (req, res, next) => {
   try {
     if(!req.query.type) {
-      await Horse.find({}, (err, horses) => {
+      await Horse.find({}).
+      populate('location').
+      exec((err, horses) => {
         if (err) res.status(404).send();
         res.status(201).json(horses);
       });
     } else {
-      await Horse.find({'type': req.query.type}, (err, horses) => {
+      await Horse.find({'type': req.query.type}).
+      populate('location').
+      exec((err, horses) => {
         if (err) res.status(404).send();
         res.status(201).json(horses);
       });
@@ -41,19 +45,28 @@ exports.getHorseCount = async (req, res, next) => {
       res.status(201).json(count);
     });
   } catch(err) {
-    return res.status(500).send(err);
+    return next(err);
   }
 };
 
-//Display a specific horse
+//Get a specific horse
 exports.getHorse = async (req,res,next) => {
   try {
-    await Horse.findById(req.params.id, (err, horse) => {
-      if (err) res.status(404).send();
-      res.status(200).send(horse);
-    });
-  }
-  catch(err) {
+    if(req.route.methods.get && req.route.path === "/:id") {
+      await Horse.findById(req.params.id, (err, horse) => {
+        if (err) res.status(404).send();
+        res.status(200).send(horse);
+      });
+    } else if (req.route.methods.put) {
+      await Horse.findById(req.params.id).
+      populate('location').
+      exec((err, horse) => {
+        if (err) res.status(404).send();
+        req.body.horse.location = horse.location;
+        next();
+      });
+    }
+  } catch(err) {
     return res.status(500).send(err);
   }
 };
@@ -61,14 +74,14 @@ exports.getHorse = async (req,res,next) => {
 //Update an existing horse
 exports.updateHorse = async (req, res, next) => {
   try {
-    console.log(req.body);
-    await Horse.findByIdAndUpdate(req.params.id, {$set: req.body.horse}, { new: true }, (err, horse) => {
+    await Horse.findByIdAndUpdate(req.params.id, {$set: req.body.horse}, { new: true }).
+    populate('location').
+    exec((err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
     });
-  }
-  catch(err) {
-    return res.status(500).send(err);
+  } catch(err) {
+    return next(err);
   }
 };
 
@@ -79,9 +92,8 @@ exports.deleteHorse = async (req,res,next) => {
       if (err) return next(err);
       res.status(200).send(`The horse was succesfully deleted`);
     });
-  }
-  catch(err) {
-    return res.status(500).send(err);
+  } catch(err) {
+    return next(err);
   }
 };
 
