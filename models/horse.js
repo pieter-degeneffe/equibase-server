@@ -73,8 +73,8 @@ let horseSchema = new Schema({
     maxlength: [64, 'Max length is 64 characters']
   },
   location: {
-    type: String,
-    enum: ['locatie 1','locatie 2','locatie 3']
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Location'
   },
   owner : {
     type: mongoose.Schema.Types.ObjectId,
