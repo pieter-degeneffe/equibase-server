@@ -1,8 +1,29 @@
 const Location = require('../models/location.js');
+const Horse = require('../models/horse.js');
+
+//HELPER - Get amount of horses in multiple locations
+const getHorsesInMultipleLocations = async locations => {
+  for (const location of locations) {
+    const horses = await Horse.find({ location: location._id }).lean();
+    location.horses = horses;
+  }
+  return locations;
+}
+
+//HELPER - Get amount of horses in single location ID
+const getHorsesInLocation = async locationId => {
+  const horses = await Horse.find({ location: locationId }).lean();
+  return horses;
+}
+
+//HELPER - Get amount of places in single location ID
+const getPlacesInLocation = async locationId => {
+  const location = await Location.findById(locationId).lean();
+  return location.places;
+}
 
 //Create a new location
 exports.createLocation = async (req, res, next) => {
-  console.log(req.body);
   try {
     let location = new Location(req.body.location);
     await location.save((err) => {
@@ -17,10 +38,9 @@ exports.createLocation = async (req, res, next) => {
 //Get all locations
 exports.getAllLocations = async (req, res, next) => {
   try {
-    await Location.find({}, (err, locations) => {
-      if (err) return next(err);
-      res.status(201).send(locations);
-    });
+    const locations  = await Location.find({}).lean();
+    await getHorsesInMultipleLocations(locations);
+    res.status(201).json(locations);
   } catch (err) {
     return next(err);
   }
@@ -29,10 +49,15 @@ exports.getAllLocations = async (req, res, next) => {
 //Get a specific location
 exports.getLocation = async (req,res,next) => {
   try {
-    await Location.findById(req.params.id, (err, location) => {
-      if (err) return next(err);
+    const location = await Location.findById(req.params.id).lean();
+    if(req.route.methods.get && req.route.path === "/:id") {
       res.status(201).send(location);
-    });
+    // } else if (req.route.methods.put && req.route.path === "/:id/horse/:horseId") {
+    } else if (req.route.methods.put) {
+      location.horses = await getHorsesInLocation(location._id);
+      req.body.location.horses = location.horses;
+      next();
+    }
   } catch (err) {
     return next(err);
   }
@@ -62,3 +87,30 @@ exports.deleteLocation = async (req, res, next) => {
     return next(err);
   }
 }
+
+//Check available places for a location
+exports.checkAvailablePlaces = async (req,res,next) => {
+  try {
+    if (req.body.location) {
+      if(req.body.location.places < req.body.location.horses.length){
+        let err = new Error('Er zitten te veel paarden in deze locatie om deze aanpassing te doen');
+        err.statusCode = 500;
+        next(err);
+      } else {
+        next();
+      }
+    } else if (req.body.horse && req.body.horse.location) {
+      let horsesInLocation = await getHorsesInLocation(req.body.horse.location);
+      let placesInLocation = await getPlacesInLocation(req.body.horse.location);
+      if (horsesInLocation.length < placesInLocation) {
+        next();
+      } else {
+        let err = new Error('Er is geen plaats meer in de gekoze locatie');
+        err.statusCode = 500;
+        next(err);
+      }
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
