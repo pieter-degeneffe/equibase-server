@@ -11,7 +11,11 @@ let locationSchema = new Schema({
   places: {
     type: Number,
     required: [true, 'Location places is a required field'],
-  }
+  },
+  stable: {
+    type: String,
+    enum: ['Stal Zoutleeuw','Stal Dormaal','Wei',]
+  },
 }, {timestamps: true});
 
 module.exports = mongoose.model('Location', locationSchema);

@@ -1,1 +1,3 @@
 runtime: nodejs10
+env_variables:
+  MONGODB_URI: "mongodb+srv://pieter_degeneffe:p4RK8MLghHh}d9Y4w2u@hof-ter-leeuwe-ku6tu.gcp.mongodb.net/htl-app"

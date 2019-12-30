@@ -38,7 +38,7 @@ exports.createLocation = async (req, res, next) => {
 //Get all locations
 exports.getAllLocations = async (req, res, next) => {
   try {
-    const locations  = await Location.find({}).lean();
+    const locations  = await Location.find({}, null, {sort: {stable: 1}}).lean();
     await getHorsesInMultipleLocations(locations);
     res.status(201).json(locations);
   } catch (err) {
@@ -109,6 +109,8 @@ exports.checkAvailablePlaces = async (req,res,next) => {
         err.statusCode = 500;
         next(err);
       }
+    } else {
+      next();
     }
   } catch (err) {
     return next(err);

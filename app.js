@@ -49,7 +49,9 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.connect(process.env.MONGODB_URI);
 
-//app.use('/', authCheck);
+if(process.env.NODE_ENV === 'production') {
+  app.use('/', authCheck);
+}
 
 //Mounting of routes
 const horse = require('./routes/api/horse');
@@ -60,6 +62,8 @@ const location = require('./routes/api/location');
 app.use('/api/location', location);
 const search = require('./routes/api/search');
 app.use('/api/search', search);
+const database = require('./routes/database/database');
+app.use('/db', database);
 
 //Error handling middleware
 app.use((err, req, res, next) => {
@@ -67,6 +71,19 @@ app.use((err, req, res, next) => {
 });
 
 app.use(express.static('public'))
+
+var backup = require('mongodb-backup');
+backup({
+  uri: "//mongodb+srv://pieter_degeneffe:p4RK8MLghHh}d9Y4w2u@equibase-obsn7.gcp.mongodb.net/test",
+  root: 'public', // write files into this dir
+  callback: function(err) {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log('finish');
+    }
+  }
+});
 
 // Start the server
 app.listen(PORT || 8081, () => {

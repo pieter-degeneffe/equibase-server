@@ -17,15 +17,21 @@ exports.createHorse = async (req, res, next) => {
 //Get all Horses
 exports.getAllHorses = async (req, res, next) => {
   try {
-    if(!req.query.type) {
-      await Horse.find({}).
+    if(req.query.type) {
+      await Horse.find({'type': req.query.type}).
       populate('location').
       exec((err, horses) => {
         if (err) res.status(404).send();
         res.status(201).json(horses);
       });
+    } else if (req.query.owner) {
+      await Horse.find({'owner': req.query.owner}).
+      exec((err, horses) => {
+        if (err) res.status(404).send();
+        res.status(201).json(horses);
+      });
     } else {
-      await Horse.find({'type': req.query.type}).
+      await Horse.find({}).
       populate('location').
       exec((err, horses) => {
         if (err) res.status(404).send();
