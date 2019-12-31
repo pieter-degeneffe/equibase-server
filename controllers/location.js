@@ -101,13 +101,18 @@ exports.checkAvailablePlaces = async (req,res,next) => {
       }
     } else if (req.body.horse && req.body.horse.location) {
       let horsesInLocation = await getHorsesInLocation(req.body.horse.location);
-      let placesInLocation = await getPlacesInLocation(req.body.horse.location);
-      if (horsesInLocation.length < placesInLocation) {
-        next();
+      //If a horse is being updated with the same location verification of available places is not needed
+      if (horsesInLocation.some(horse => horse._id.equals(req.body.horse._id))) {
+          next();
       } else {
-        let err = new Error('Er is geen plaats meer in de gekoze locatie');
-        err.statusCode = 500;
-        next(err);
+        let placesInLocation = await getPlacesInLocation(req.body.horse.location);
+        if (horsesInLocation.length < placesInLocation) {
+          next();
+        } else {
+          let err = new Error('Er is geen plaats meer in de gekoze locatie');
+          err.statusCode = 500;
+          next(err);
+        }
       }
     } else {
       next();
