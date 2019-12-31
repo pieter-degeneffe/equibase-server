@@ -25,42 +25,6 @@ exports.getAllHorses = async (req, res, next) => {
         if (err) res.status(404).send();
         res.status(201).json(horses);
       });
-    // if(req.query && req.query.death === false) {
-    //   await Horse.find(req.query,{'death': {$ne: true}}).
-    //     populate('location').
-    //     exec((err, horses) => {
-    //       if (err) res.status(404).send();
-    //       res.status(201).json(horses);
-    //     });
-    // } else {
-    //   await Horse.find({}).
-    //     exec((err, horses) => {
-    //       if (err) res.status(404).send();
-    //       res.status(201).json(horses);
-    //     });
-    // }
-    // if(req.query.type) {
-    //   await Horse.find({'type': req.query.type, 'death': {$ne: true}}).
-    //   populate('location').
-    //   exec((err, horses) => {
-    //     if (err) res.status(404).send();
-    //     res.status(201).json(horses);
-    //   });
-    // } else if (req.query.owner) {
-    //   await Horse.find({'owner': req.query.owner}).
-    //   exec((err, horses) => {
-    //     if (err) res.status(404).send();
-    //     res.status(201).json(horses);
-    //   });
-    // } else if (req.query.death) {
-    //   await Horse.find({'death': true}).
-    //   exec((err, horses) => {
-    //     if (err) res.status(404).send();
-    //     res.status(201).json(horses);
-    //   });
-    // } else {
-    //
-    // }
   } catch (err) {
     return next(err);
   }
