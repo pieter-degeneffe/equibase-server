@@ -16,7 +16,6 @@ exports.createHorse = async (req, res, next) => {
 
 //Get all Horses
 exports.getAllHorses = async (req, res, next) => {
-  console.log(req.query);
   try {
     let limit, page, sortBy, sortDesc;
     if(req.query.death === 'false') req.query.death = {$ne: true};
@@ -36,7 +35,6 @@ exports.getAllHorses = async (req, res, next) => {
       req.query.sortDesc[0] === 'true' ? sortDesc = -1 : sortDesc = 1;
       delete req.query.sortDesc;
     }
-    console.log(req.query)
     await Horse.find(req.query)
       .populate('location')
       .populate('owner')
