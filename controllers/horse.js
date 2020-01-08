@@ -16,14 +16,40 @@ exports.createHorse = async (req, res, next) => {
 
 //Get all Horses
 exports.getAllHorses = async (req, res, next) => {
+  console.log(req.query);
   try {
+    let limit, page, sortBy, sortDesc;
     if(req.query.death === 'false') req.query.death = {$ne: true};
-    console.log(req.query);
-    await Horse.find(req.query).
-      populate('location').
-      exec((err, horses) => {
+    if(req.query.limit) {
+      limit = parseInt(req.query.limit);
+      delete req.query.limit;
+    }
+    if(req.query.page) {
+      page = parseInt(req.query.page);
+      delete req.query.page;
+    }
+    if(req.query.sortBy) {
+      sortBy = req.query.sortBy[0];
+      delete req.query.sortBy;
+    }
+    if(req.query.sortDesc) {
+      req.query.sortDesc[0] === 'true' ? sortDesc = -1 : sortDesc = 1;
+      delete req.query.sortDesc;
+    }
+    console.log(req.query)
+    await Horse.find(req.query)
+      .populate('location')
+      .populate('owner')
+      .skip((limit * page) - limit)
+      .limit(limit)
+      .sort({[sortBy]: sortDesc})
+      .exec((err, horses) => {
         if (err) res.status(404).send();
-        res.status(201).json(horses);
+        Horse.countDocuments(req.query)
+          .exec((err, total) => {
+            if (err) res.status(404).send();
+            res.status(201).json({horses, total});
+          });
       });
   } catch (err) {
     return next(err);
@@ -51,13 +77,13 @@ exports.getHorse = async (req,res,next) => {
         res.status(200).send(horse);
       });
     } else if (req.route.methods.put) {
-      await Horse.findById(req.params.id).
-      populate('location').
-      exec((err, horse) => {
-        if (err) res.status(404).send();
-        req.body.horse.location = horse.location;
-        next();
-      });
+      await Horse.findById(req.params.id)
+        .populate('location')
+        .exec((err, horse) => {
+          if (err) res.status(404).send();
+          req.body.horse.location = horse.location;
+          next();
+        });
     }
   } catch(err) {
     return res.status(500).send(err);
