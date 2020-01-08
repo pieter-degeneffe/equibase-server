@@ -78,7 +78,7 @@ let horseSchema = new Schema({
   },
   owner : {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Horse'
+    ref: 'Customer'
   }
 }, {timestamps: true});
 
