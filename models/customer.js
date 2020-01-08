@@ -81,7 +81,6 @@ let customerSchema = new Schema({
     type: String,
     trim: true,
     lowercase: true,
-    unique: [true, 'Er bestaat al een klant met dit e-mail adres'],
     maxlength: [64, 'Max length is 64 characters'],
     match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
     index: true
