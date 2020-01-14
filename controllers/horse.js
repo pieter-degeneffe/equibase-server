@@ -19,6 +19,8 @@ exports.getAllHorses = async (req, res, next) => {
   try {
     let limit, page, sortBy, sortDesc;
     if(req.query.death === 'false') req.query.death = {$ne: true};
+    if(req.query.surrogate === 'false') req.query.surrogate = {$ne: true};
+    if(req.query.location === 'true') req.query.location = {$ne: null};
     if(req.query.limit) {
       limit = parseInt(req.query.limit);
       delete req.query.limit;
@@ -91,9 +93,11 @@ exports.getHorse = async (req,res,next) => {
 //Update an existing horse
 exports.updateHorse = async (req, res, next) => {
   try {
-    await Horse.findByIdAndUpdate(req.params.id, {$set: req.body.horse}, { new: true }).
-    populate('location').
-    exec((err, horse) => {
+    let unset = {}
+    if(!req.body.horse.location) unset.location = "";
+    await Horse.findByIdAndUpdate(req.params.id, { $set: req.body.horse, $unset: unset }, { new: true })
+    .populate('location')
+    .exec((err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
     });
