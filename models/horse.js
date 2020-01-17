@@ -58,6 +58,9 @@ let horseSchema = new Schema({
   death: {
     type: Boolean
   },
+  stud_horse: {
+    type: Boolean
+  },
   date_of_death: {
     type: Date,
     max: [Date.now, "Date of birth can't be in the future"]

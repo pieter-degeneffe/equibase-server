@@ -20,6 +20,7 @@ exports.getAllHorses = async (req, res, next) => {
     let limit, page, sortBy, sortDesc;
     if(req.query.death === 'false') req.query.death = {$ne: true};
     if(req.query.surrogate === 'false') req.query.surrogate = {$ne: true};
+    if(req.query.stud_horse === 'false') req.query.stud_horse = {$ne: true};
     if(req.query.location === 'true') req.query.location = {$ne: null};
     if(req.query.limit) {
       limit = parseInt(req.query.limit);
