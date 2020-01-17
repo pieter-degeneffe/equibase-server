@@ -62,6 +62,8 @@ const location = require('./routes/api/location');
 app.use('/api/location', location);
 const search = require('./routes/api/search');
 app.use('/api/search', search);
+const semenCollection = require('./routes/api/semenCollection');
+app.use('/api/semen-collection', semenCollection);
 
 //Error handling middleware
 app.use((err, req, res, next) => {
