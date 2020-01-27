@@ -10,7 +10,7 @@ exports.createHorse = async (req, res, next) => {
       res.status(201).send(horse);
     })
   } catch(err) {
-    return res.status(500).send(err);
+    return next(err);
   }
 };
 
@@ -49,7 +49,7 @@ exports.getAllHorses = async (req, res, next) => {
         Horse.countDocuments(req.query)
           .exec((err, total) => {
             if (err) res.status(404).send();
-            res.status(201).json({horses, total});
+            res.status(200).json({horses, total});
           });
       });
   } catch (err) {
@@ -62,7 +62,7 @@ exports.getHorseCount = async (req, res, next) => {
   try {
     await Horse.countDocuments({}, (err, count) => {
       if (err) res.status(404).send();
-      res.status(201).json(count);
+      res.status(200).json(count);
     });
   } catch(err) {
     return next(err);
