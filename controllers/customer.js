@@ -9,10 +9,8 @@ exports.createCustomer = async (req, res, next) => {
       if (err) return next(err);
       res.status(201).send(customer);
     })
-  }
-  catch(err) {
-    console.log('error');
-    return res.status(500).send('failed');
+  } catch(err) {
+    return next(err);
   }
 };
 
@@ -20,11 +18,11 @@ exports.createCustomer = async (req, res, next) => {
 exports.getAllCustomers = async (req, res, next) => {
   try {
     await Customer.find({}, (err, customers) => {
-      if (err) res.status(404).send();
+      if (err) return next(err);
       res.status(201).send(customers);
     });
-  } catch (err) {
-    return res.status(500).send(err);
+  } catch(err) {
+    return next(err);
   }
 };
 
@@ -36,7 +34,7 @@ exports.getCustomerCount = async (req, res, next) => {
       res.status(201).json(count);
     });
   } catch(err) {
-    return res.status(500).send(err);
+    return next(err);
   }
 };
 
@@ -47,9 +45,8 @@ exports.getCustomer = async (req,res,next) => {
       if (err) res.status(404).send();
       res.status(200).send(customer);
     });
-  }
-  catch(err) {
-    return res.status(500).send(err);
+  } catch(err) {
+    return next(err);
   }
 };
 
@@ -60,9 +57,8 @@ exports.getHorsesOfCustomer = async (req,res,next) => {
       if (err) return next(err);
       res.status(200).send(horses);
     })
-  }
-  catch(err) {
-    return res.status(500).send(err);
+  } catch(err) {
+    return next(err);
   }
 };
 
@@ -74,9 +70,8 @@ exports.updateCustomer = async (req, res, next) => {
       res.status(201).send(customer);
       console.log(customer);
     });
-  }
-  catch(err) {
-    return res.status(500).send(err);
+  } catch(err) {
+    return next(err);
   }
 };
 
@@ -88,9 +83,8 @@ exports.updateHorseOfCustomer = async (req, res, next) => {
       res.status(201).send(customer);
       console.log(customer);
     });
-  }
-  catch(err) {
-    return res.status(500).send(err);
+  } catch(err) {
+    return next(err);
   }
 };
 
@@ -101,9 +95,8 @@ exports.deleteCustomer = async (req,res,next) => {
       if (err) return next(err);
       res.status(200).send(`The customer was succesfully deleted`);
     });
-  }
-  catch(err) {
-    return res.status(500).send(err);
+  } catch(err) {
+    return next(err);
   }
 };
 
@@ -117,7 +110,7 @@ exports.addContact = async (req,res,next) => {
       res.status(200).send(`The contact was succesfully added`);
     });
   } catch(err) {
-    return res.status(500).send(err);
+    return next(err);
   }
 }
 
@@ -135,7 +128,7 @@ exports.updateContact = async (req,res,next) => {
       });
     });
   } catch(err) {
-    return res.status(500).send(err);
+    return next(err);
   }
 }
 //Remove a contact from a customer
@@ -145,7 +138,7 @@ exports.deleteContact = async (req,res,next) => {
       res.status(200).send(`The contact was succesfully removed`);
     });
   } catch(err) {
-    return res.status(500).send(err);
+    return next(err);
   }
 }
 
