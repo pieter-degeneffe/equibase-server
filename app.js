@@ -9,7 +9,8 @@ const cors = require('cors');
 //const morgan = require('morgan');
 const mongoose = require('mongoose');
 require('dotenv').config();
-const { handleError } = require('./helpers/error')
+// const { handleError, ErrorHandler } = require('./helpers/error')
+// const { handleError } = require('./helpers/error')
 const fileUpload = require('express-fileupload');
 
 // Set up Auth0 configuration
