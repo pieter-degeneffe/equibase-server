@@ -65,13 +65,21 @@ const search = require('./routes/api/search');
 app.use('/api/search', search);
 const semenCollection = require('./routes/api/semenCollection');
 app.use('/api/semen-collection', semenCollection);
-
-//Error handling middleware
-app.use((err, req, res, next) => {
-  handleError(err, res);
-});
+const nitrogenContainer = require('./routes/api/nitrogenContainer');
+app.use('/api/nitrogen-container', nitrogenContainer);
 
 app.use(express.static('public'))
+
+//Error handling middleware - must be the last among other middleware
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode ? err.statusCode : 500
+  const message = err.message
+  res.status(statusCode).json({
+    status: "error",
+    statusCode,
+    message
+  });
+});
 
 // Start the server
 app.listen(PORT || 8081, () => {
