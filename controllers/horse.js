@@ -73,15 +73,17 @@ exports.getHorseCount = async (req, res, next) => {
 exports.getHorse = async (req,res,next) => {
   try {
     if(req.route.methods.get && req.route.path === "/:id") {
-      await Horse.findById(req.params.id, (err, horse) => {
-        if (err) res.status(404).send();
-        res.status(200).send(horse);
-      });
+      await Horse.findById(req.params.id)
+        .populate('owner')
+        .exec((err, horse) => {
+          if (err) return next(err);
+          res.status(200).send(horse);
+        });
     } else if (req.route.methods.put) {
       await Horse.findById(req.params.id)
         .populate('location')
         .exec((err, horse) => {
-          if (err) res.status(404).send();
+          if (err) return next(err);
           req.body.horse.location = horse.location;
           next();
         });
