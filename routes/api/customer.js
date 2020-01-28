@@ -4,6 +4,7 @@ const customerController = require('../../controllers/customer.js');
 
 router.post('/', customerController.createCustomer);
 router.get('/', customerController.getAllCustomers);
+router.get('/search/:id', customerController.getCustomerSearch);
 router.get('/count', customerController.getCustomerCount);
 router.get('/countries', customerController.getCountries);
 router.get('/:id', customerController.getCustomer);

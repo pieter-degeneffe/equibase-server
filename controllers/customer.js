@@ -26,6 +26,16 @@ exports.getAllCustomers = async (req, res, next) => {
   }
 };
 
+//Search customers
+exports.getCustomerSearch = async (req, res, next) => {
+  try {
+    const respons = await Customer.fuzzySearch(req.params.id);
+    res.status(201).send(respons);
+  } catch(err) {
+    return next(err);
+  }
+};
+
 //Get customer count
 exports.getCustomerCount = async (req, res, next) => {
   try {
