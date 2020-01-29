@@ -99,6 +99,7 @@ exports.updateHorse = async (req, res, next) => {
     let unset = {}
     if(!req.body.horse.location) unset.location = "";
     await Horse.findByIdAndUpdate(req.params.id, { $set: req.body.horse, $unset: unset }, { new: true })
+    .populate('owner')
     .populate('location')
     .exec((err, horse) => {
       if (err) return next(err);
