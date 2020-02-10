@@ -2,8 +2,8 @@
 
 // import dependencies
 const express = require('express');
-const jwt = require("express-jwt");
-const jwksRsa = require("jwks-rsa");
+// const jwt = require("express-jwt");
+// const jwksRsa = require("jwks-rsa");
 const bodyParser = require('body-parser');
 const cors = require('cors');
 //const morgan = require('morgan');
@@ -12,12 +12,12 @@ require('dotenv').config();
 // const { handleError, ErrorHandler } = require('./helpers/error')
 // const { handleError } = require('./helpers/error')
 const fileUpload = require('express-fileupload');
-
+const authCheck = require('./middleware/auth.js');
 // Set up Auth0 configuration
-const authConfig = require("./auth_config.json");
-if (!authConfig.domain || !authConfig.audience) {
-  throw "Please make sure that auth_config.json is in place and populated";
-}
+// const authConfig = require("./auth_config.json");
+// if (!authConfig.domain || !authConfig.audience) {
+//   throw "Please make sure that auth_config.json is in place and populated";
+// }
 
  // create the express app
 const PORT = process.env.PORT || 8081; // client is running on 8080
@@ -31,17 +31,17 @@ app.use(cors());
 app.use(fileUpload());
 
 // Middleware that validates incoming bearer tokens using JWKS from equibase.eu.auth0.com
-const authCheck = jwt({
-  secret: jwksRsa.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    jwksUri: `https://${authConfig.domain}/.well-known/jwks.json`
-  }),
-  audience: authConfig.audience,
-  issuer: `https://${authConfig.domain}/`,
-  algorithm: ["RS256"]
-});
+// const authCheck = jwt({
+//   secret: jwksRsa.expressJwtSecret({
+//     cache: true,
+//     rateLimit: true,
+//     jwksRequestsPerMinute: 5,
+//     jwksUri: `https://${authConfig.domain}/.well-known/jwks.json`
+//   }),
+//   audience: authConfig.audience,
+//   issuer: `https://${authConfig.domain}/`,
+//   algorithm: ["RS256"]
+// });
 
 //Connect to database
 mongoose.set('useNewUrlParser', true);
@@ -53,6 +53,7 @@ mongoose.connect(process.env.MONGODB_URI);
 if(process.env.NODE_ENV === 'production') {
   app.use('/', authCheck);
 }
+// app.use('/', authCheck);
 
 //Mounting of routes
 const horse = require('./routes/api/horse');
