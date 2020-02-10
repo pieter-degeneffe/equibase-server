@@ -64,8 +64,9 @@ const location = require('./routes/api/location');
 app.use('/api/location', location);
 const search = require('./routes/api/search');
 app.use('/api/search', search);
-const semenCollection = require('./routes/api/semenCollection');
-app.use('/api/semen-collection', semenCollection);
+const semen = require('./routes/api/semen');
+app.use('/api/semen', semen);
+//const semenCollectionModification = require('./routes/api/semenCollectionModification');
 const nitrogenContainer = require('./routes/api/nitrogenContainer');
 app.use('/api/nitrogen-container', nitrogenContainer);
 
