@@ -1,15 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const semenCollectionController = require('../../controllers/semen/collection.js');
-const semenCollectionModificationController = require('../../controllers/semen/collectionModification.js');
+const semenCollectionController = require('../../controllers/semen.js');
 
 router.get('/', semenCollectionController.getAllSemenCollections)
 router.get('/:id', semenCollectionController.getSemenCollection);
 router.post('/', semenCollectionController.createSemenCollection);
-router.put('/:id', semenCollectionController.updateSemenCollection);
-router.delete('/:id', semenCollectionController.deleteSemenCollection);
+// router.put('/:id', semenCollectionController.updateSemenCollection);
+// router.delete('/:id', semenCollectionController.deleteSemenCollection);
 
-router.post('/:collectionId/modification', semenCollectionModificationController.createModification);
+router.post('/:collectionId/modification', semenCollectionController.createModification);
 
 
 module.exports = router;
