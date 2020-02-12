@@ -100,8 +100,10 @@ exports.createModification = async (req, res, next) => {
     await semenCollectionModification.save((err) => {
       if (err) return next(err);
       SemenCollection.findByIdAndUpdate(req.params.collectionId, {$push: {modifications: semenCollectionModification._id}}, { new: true })
+      .populate('stallion')
       .populate('owner')
       .populate('modifications')
+      .populate('location.container')
       .exec((err, semenCollection) => {
         if (err) return next(err);
         res.status(201).send(semenCollection);
@@ -113,12 +115,18 @@ exports.createModification = async (req, res, next) => {
 };
 
 //Remove the modification to a semen collection
-// exports.deleteModification = async (req,res,next) => {
-//   try {
-//     SemenCollection.findByIdAndUpdate(req.params.collectionId, {$pull: {modifications: {_id: req.params.modificationId}}}, (err, semenCollection) => {
-//       res.status(200).send(`The modification was succesfully removed`);
-//     });
-//   } catch(err) {
-//     return next(err);
-//   }
-// }
+exports.deleteModification = async (req,res,next) => {
+  try {
+    SemenCollection.findByIdAndUpdate(req.params.collectionId, { $pull: { modifications: req.params.modificationId }}, { new: true })
+    .populate('stallion')
+    .populate('owner')
+    .populate('modifications')
+    .populate('location.container')
+    .exec((err, semenCollection) => {
+      if (err) return next(err);
+      res.status(200).send(semenCollection);
+    });
+  } catch(err) {
+    return next(err);
+  }
+};
