@@ -37,8 +37,7 @@ let semenCollectionSchema = new Schema(
     },
     color: {
       type: String,
-      enum: ['Rood','Oranje','Geel','Groen','Blauw','Indigo','Violet'],
-      immutable: true
+      enum: ['Rood','Oranje','Geel','Groen','Blauw','Indigo','Violet']
     },
     type: {
       type: String,
