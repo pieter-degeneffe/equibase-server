@@ -65,28 +65,33 @@ exports.getSemenCollection = async (req,res,next) => {
 };
 
 //Update a semen collection
-// exports.updateSemenCollection = async (req, res, next) => {
-//   try {
-//     const response = await SemenCollection.findByIdAndUpdate(req.params.id, {$set: req.body.semenCollection}, (err, semenCollection) => {
-//       if (err) return next(err);
-//       res.status(200).send(semenCollection);
-//     });
-//   } catch (err) {
-//     return next(err);
-//   }
-// };
+exports.updateSemenCollection = async (req, res, next) => {
+  try {
+    await SemenCollection.findByIdAndUpdate(req.params.id, { $set: req.body.semenCollection }, { new: true })
+    .populate('stallion')
+    .populate('owner')
+    .populate('modifications')
+    .populate('location.container')
+    .exec((err, semenCollection) => {
+      if (err) return next(err);
+      res.status(201).send(semenCollection);
+    });
+  } catch(err) {
+    return next(err);
+  }
+};
 
 //Delete a semen collection
-// exports.deleteSemenCollection = async (req,res,next) => {
-//   try {
-//     SemenCollection.findByIdAndDelete(req.params.id, (err, SemenCollection) => {
-//       if (err) return next(err);
-//       res.status(200).send(`The semen collection was succesfully deleted`);
-//     });
-//   } catch (err) {
-//     return next(err);
-//   }
-// };
+exports.deleteSemenCollection = async (req,res,next) => {
+  try {
+    SemenCollection.findByIdAndDelete(req.params.id, (err, SemenCollection) => {
+      if (err) return next(err);
+      res.status(204).send(`The semen collection was succesfully deleted`);
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
 
 //Create a new modification to a semen collection
 exports.createModification = async (req, res, next) => {
