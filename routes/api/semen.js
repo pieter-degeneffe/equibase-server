@@ -9,6 +9,7 @@ router.put('/:id', semenCollectionController.updateSemenCollection);
 router.delete('/:id', semenCollectionController.deleteSemenCollection);
 
 router.post('/:collectionId/modification', semenCollectionController.createModification);
+router.delete('/:collectionId/modification/:modificationId', semenCollectionController.deleteModification);
 
 
 module.exports = router;
