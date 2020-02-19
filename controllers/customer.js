@@ -106,7 +106,7 @@ exports.deleteContact = async (req,res,next) => {
 //Search for a customer
 exports.getCustomerSearch = async (req, res, next) => {
   try {
-    const respons = await Customer.fuzzySearch(req.params.searchValue;
+    const response = await Customer.fuzzySearch(req.params.searchValue);
     res.status(201).send(respons);
   } catch(err) {
     return next(err);
