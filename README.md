@@ -6,8 +6,8 @@ Document based database using MongoDB. Validation, casting and object nodeling h
 User authentication is provided via Auth0
 ## API endpoints
 #### Customer
-`POST /customer` Create a new customer
-`GET /customer` Get all Customers
-`GET /customer/:id` Get an existing customer
-`PUT /customer/:id` Update an existing customer
-`DELETE /customer/:id` Delete an existing customer
+`POST /customer` Create a new customer  
+`GET /customer` Get all Customers  
+`GET /customer/:id` Get an existing customer  
+`PUT /customer/:id` Update an existing customer  
+`DELETE /customer/:id` Delete an existing customer  
