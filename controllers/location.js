@@ -46,10 +46,10 @@ exports.getAllLocations = async (req, res, next) => {
   }
 };
 
-//Get a specific location
+//Get a location
 exports.getLocation = async (req,res,next) => {
   try {
-    const location = await Location.findById(req.params.id).lean();
+    const location = await Location.findById(req.params.locationId).lean();
     if(req.route.methods.get && req.route.path === "/:id") {
       res.status(201).send(location);
     // } else if (req.route.methods.put && req.route.path === "/:id/horse/:horseId") {
@@ -63,10 +63,10 @@ exports.getLocation = async (req,res,next) => {
   }
 };
 
-//Update an existing location
+//Update a location
 exports.updateLocation = async (req, res, next) => {
   try {
-    await Location.findByIdAndUpdate(req.params.id, {$set: req.body.location}, { new: true }, (err, location) => {
+    await Location.findByIdAndUpdate(req.params.locationId, {$set: req.body.location}, { new: true }, (err, location) => {
       if (err) return next(err);
       res.status(201).send(location);
     });
@@ -75,10 +75,10 @@ exports.updateLocation = async (req, res, next) => {
   }
 };
 
-//Delete an existing location
+//Delete a location
 exports.deleteLocation = async (req, res, next) => {
   try {
-    await Location.findByIdAndDelete(req.params.id, (err, location) => {
+    await Location.findByIdAndDelete(req.params.locationId, (err, location) => {
       if (err) return next (err);
       res.status(200).send(`The location was succesfully deleted`);
     })
