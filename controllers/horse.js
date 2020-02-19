@@ -60,7 +60,7 @@ exports.getAllHorses = async (req, res, next) => {
 //Get a horse
 exports.getHorse = async (req,res,next) => {
   try {
-    if(req.route.methods.get && req.route.path === "/:id") {
+    if(req.route.methods.get && req.route.path === "/:horseId") {
       await Horse.findById(req.params.horseId)
         .populate('owner')
         .exec((err, horse) => {
