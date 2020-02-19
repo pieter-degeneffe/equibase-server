@@ -2,11 +2,11 @@ var mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
 const Horse = require('../models/horse.js');
 const Customer = require('../models/customer.js');
 
-//Get a search
+//Search for a customer or horse
 exports.getSearch = async (req,res,next) => {
   Promise.all([
-    Customer.fuzzySearch(req.params.id),
-    Horse.fuzzySearch(req.params.id)
+    Customer.fuzzySearch(req.params.searchValue),
+    Horse.fuzzySearch(req.params.searchValue)
   ])
   .then(function(result) {
     const respons = [].concat.apply([],result);
