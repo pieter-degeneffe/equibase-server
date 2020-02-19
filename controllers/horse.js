@@ -14,7 +14,7 @@ exports.createHorse = async (req, res, next) => {
   }
 };
 
-//Get all Horses
+//Get all horses
 exports.getAllHorses = async (req, res, next) => {
   try {
     let limit, page, sortBy, sortDesc;
@@ -57,30 +57,18 @@ exports.getAllHorses = async (req, res, next) => {
   }
 };
 
-//Get horse count
-exports.getHorseCount = async (req, res, next) => {
-  try {
-    await Horse.countDocuments({}, (err, count) => {
-      if (err) res.status(404).send();
-      res.status(200).json(count);
-    });
-  } catch(err) {
-    return next(err);
-  }
-};
-
-//Get a specific horse
+//Get a horse
 exports.getHorse = async (req,res,next) => {
   try {
     if(req.route.methods.get && req.route.path === "/:id") {
-      await Horse.findById(req.params.id)
+      await Horse.findById(req.params.horseId)
         .populate('owner')
         .exec((err, horse) => {
           if (err) return next(err);
           res.status(200).send(horse);
         });
     } else if (req.route.methods.put) {
-      await Horse.findById(req.params.id)
+      await Horse.findById(req.params.horseId)
         .populate('location')
         .exec((err, horse) => {
           if (err) return next(err);
@@ -88,17 +76,17 @@ exports.getHorse = async (req,res,next) => {
           next();
         });
     }
-  } catch(err) {
-    return res.status(500).send(err);
+  } catch (err) {
+    return next(err);
   }
 };
 
-//Update an existing horse
+//Update a horse
 exports.updateHorse = async (req, res, next) => {
   try {
     let unset = {}
     if(!req.body.horse.location) unset.location = "";
-    await Horse.findByIdAndUpdate(req.params.id, { $set: req.body.horse, $unset: unset }, { new: true })
+    await Horse.findByIdAndUpdate(req.params.horseId, { $set: req.body.horse, $unset: unset }, { new: true })
     .populate('owner')
     .populate('location')
     .exec((err, horse) => {
@@ -110,10 +98,10 @@ exports.updateHorse = async (req, res, next) => {
   }
 };
 
-//Delete an existing Horse
+//Delete a horse
 exports.deleteHorse = async (req,res,next) => {
   try {
-    Horse.findByIdAndDelete(req.params.id, (err, horse) => {
+    Horse.findByIdAndDelete(req.params.horseId, (err, horse) => {
       if (err) return next(err);
       res.status(200).send(`The horse was succesfully deleted`);
     });
@@ -122,26 +110,38 @@ exports.deleteHorse = async (req,res,next) => {
   }
 };
 
-//Create a new Passport
+//Create a new horse passport
 exports.createPassport = async (req, res, next) => {
   let file = req.files.file;
-  let filename = 'files/horse/passport/' + req.params.id +'.pdf';
+  let filename = 'files/horse/passport/' + req.params.horseId +'.pdf';
   file.mv('public/' + filename, function(err) {
     if (err) return res.status(500).send(err);
-    Horse.findByIdAndUpdate(req.params.id, {$set: { passport: filename}}, { new: true }, (err, horse) => {
+    Horse.findByIdAndUpdate(req.params.horseId, {$set: { passport: filename}}, { new: true }, (err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
     });
   });
 };
 
+//Delete a horse passport
 exports.deletePassport = (req, res, next) => {
-  let filename = 'public/files/horse/passport/' + req.params.id +'.pdf';
+  let filename = 'public/files/horse/passport/' + req.params.horseId +'.pdf';
   fs.unlink(filename, function() {
-    // if (err) return res.status(500).send(err);
-    Horse.findByIdAndUpdate(req.params.id, {$unset: { passport: 1}}, { new: true }, (err, horse) => {
+    Horse.findByIdAndUpdate(req.params.horseId, {$unset: { passport: 1}}, { new: true }, (err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
     });
   });
 }
+
+//Get horse count
+// exports.getHorseCount = async (req, res, next) => {
+//   try {
+//     await Horse.countDocuments({}, (err, count) => {
+//       if (err) res.status(404).send();
+//       res.status(200).json(count);
+//     });
+//   } catch(err) {
+//     return next(err);
+//   }
+// };
