@@ -18,22 +18,22 @@ User authentication is provided via Auth0
 `GET /customer/:customerId/horse` Get the horses of a customer  
 #### Horses
 `POST /horse` Create a new horse  
-`GET /horse` Get all horses
+`GET /horse` Get all horses  
 `GET /horse/:horseId` Get a horse  
 `PUT /horse/:horseId` Update a horse  
-`DELETE /horse/:horseId` Delete a horse
-`POST /horse/:horseId/passport` Create a new horse passport
-`DELETE /horse/:horseId/passport` Delete a horse passport
+`DELETE /horse/:horseId` Delete a horse  
+`POST /horse/:horseId/passport` Create a new horse passport  
+`DELETE /horse/:horseId/passport` Delete a horse passport  
 #### Locations
 `POST /location` Create a new location  
-`GET /location` Get all locations
+`GET /location` Get all locations  
 `GET /location/:locationId` Get a location  
 `PUT /location/:locationId` Update a location  
-`DELETE /location/:locationId` Delete a location
+`DELETE /location/:locationId` Delete a location  
 #### Nitrogen containers
-`POST /nitrogenContainer` Create a new nitrogen container
-`GET /nitrogenContainer` Get all nitrogen containers
-`PUT /nitrogenContainer/:nitrogenContainerId` Update a nitrogen container
-`DELETE /nitrogenContainer/:nitrogenContainerId` Delete a nitrogen container
+`POST /nitrogenContainer` Create a new nitrogen container  
+`GET /nitrogenContainer` Get all nitrogen containers  
+`PUT /nitrogenContainer/:nitrogenContainerId` Update a nitrogen container  
+`DELETE /nitrogenContainer/:nitrogenContainerId` Delete a nitrogen container  
 #### Search
 `GET /search/:searchValue` Search for a customer or horse  
