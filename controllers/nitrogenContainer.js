@@ -29,7 +29,7 @@ exports.getNitrogenContainers = async (req,res,next) => {
 //Update a nitrogen container
 exports.updateNitrogenContainer = async (req, res, next) => {
   try {
-    const response = await NitrogenContainer.findByIdAndUpdate(req.params.id, {$set: req.body.nitrogenContainer}, { new: true }, (err, nitrogenContainer) => {
+    const response = await NitrogenContainer.findByIdAndUpdate(req.params.nitrogenContainerId, {$set: req.body.nitrogenContainer}, { new: true }, (err, nitrogenContainer) => {
       if (err) return next(err);
       res.status(200).send(nitrogenContainer);
     });
@@ -41,7 +41,7 @@ exports.updateNitrogenContainer = async (req, res, next) => {
 //Delete a nitrogen container
 exports.deleteNitrogenContainer = async (req,res,next) => {
   try {
-    NitrogenContainer.findByIdAndDelete(req.params.id, (err, nitrogenContainer) => {
+    NitrogenContainer.findByIdAndDelete(req.params.nitrogenContainerId, (err, nitrogenContainer) => {
       if (err) return next(err);
       res.status(200).send(`The customer was succesfully deleted`);
     });
