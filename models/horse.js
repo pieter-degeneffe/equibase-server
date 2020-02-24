@@ -82,6 +82,11 @@ let horseSchema = new Schema({
   owner : {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Customer'
+  },
+  stud_fee: {
+    type: String,
+    trim: true,
+    maxlength: [15, 'Max length is 15 characters']
   }
 }, {timestamps: true});
 
