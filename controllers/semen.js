@@ -27,6 +27,12 @@ exports.getAllSemenCollections = async (req,res,next) => {
     const populateModifications = {
       path: 'modifications'
     };
+    if(req.query.modificationType) {
+      populateModifications.match = { 'type': req.query.modificationType }
+      delete req.query.modificationType;
+      req.query.modifications = { $exists: true, $ne: [] }
+    }
+    console.log(req.query);
     if(req.query.createdBefore && req.query.createdAfter) {
       //populateModifications.match = {"createdAt": {"$gte": req.query.createdAfter, "$lt": req.query.createdBefore}}
       populateModifications.match = {"createdAt": {"$lt": req.query.createdBefore}}
