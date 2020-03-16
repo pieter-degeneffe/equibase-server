@@ -33,13 +33,19 @@ exports.getAllSemenCollections = async (req,res,next) => {
       req.query.modifications = { $exists: true, $ne: [] }
     }
     console.log(req.query);
-    if(req.query.createdBefore && req.query.createdAfter) {
-      //populateModifications.match = {"createdAt": {"$gte": req.query.createdAfter, "$lt": req.query.createdBefore}}
-      populateModifications.match = {"createdAt": {"$lt": req.query.createdBefore}}
-      req.query.createdAt = {$lt: req.query.createdBefore};
-      delete req.query.createdBefore;
-      delete req.query.createdAfter;
+    if(req.query.dates) {
+      console.log(req.query.dates)
+      populateModifications.match = {"createdAt": {"$lt": req.query.dates[1]}} //modifications created after start date
+      req.query.production_date = {$lt: req.query.dates[1]}; //Semen collections with a production date after start date
+      delete req.query.dates;
     }
+    // if(req.query.createdBefore && req.query.createdAfter) {
+    //   //populateModifications.match = {"createdAt": {"$gte": req.query.createdAfter, "$lt": req.query.createdBefore}}
+    //   populateModifications.match = {"createdAt": {"$lt": req.query.createdBefore}}
+    //   req.query.createdAt = {$lt: req.query.createdBefore};
+    //   delete req.query.createdBefore;
+    //   delete req.query.createdAfter;
+    // }
     await SemenCollection.find(req.query)
     .populate('stallion')
     .populate(populateModifications)
@@ -47,6 +53,7 @@ exports.getAllSemenCollections = async (req,res,next) => {
     .populate('location.container')
     .exec((err, semenCollections) => {
       if (err) return next(err);
+      console.log(semenCollections);
       res.status(200).send(semenCollections);
       next();
     });
@@ -90,7 +97,8 @@ exports.updateSemenCollection = async (req, res, next) => {
 //Delete a semen collection
 exports.deleteSemenCollection = async (req,res,next) => {
   try {
-    SemenCollection.findByIdAndDelete(req.params.id, (err, SemenCollection) => {
+    SemenCollection.findByIdAndDelete(req.params.id, (err, semenCollection) => {
+      semenCollection.modifications.map(modification => console.log(modification));
       if (err) return next(err);
       res.status(204).send(`The semen collection was succesfully deleted`);
     });
