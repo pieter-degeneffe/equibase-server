@@ -22,6 +22,9 @@ exports.getAllHorses = async (req, res, next) => {
     if(req.query.surrogate === 'false') req.query.surrogate = {$ne: true};
     if(req.query.stud_horse === 'false') req.query.stud_horse = {$ne: true};
     if(req.query.location === 'true') req.query.location = {$ne: null};
+    if(req.query.date_of_birth === 'true') req.query.date_of_birth = {$ne: null};
+    if(req.query.surrogate_uid === 'true') req.query.surrogate_uid = {$ne: null};
+    if(req.query.microchip === 'true') req.query.microchip = {$ne: null};
     if(req.query.limit) {
       limit = parseInt(req.query.limit);
       delete req.query.limit;
