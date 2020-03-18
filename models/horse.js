@@ -2,6 +2,15 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
 
+let lodgingSchema = new Schema({
+  arrival: {
+    type: Date
+  },
+  departure: {
+    type: Date
+  }
+});
+
 let horseSchema = new Schema({
   name: {
     type: String,
@@ -87,7 +96,8 @@ let horseSchema = new Schema({
     type: String,
     trim: true,
     maxlength: [15, 'Max length is 15 characters']
-  }
+  },
+  lodging : [lodgingSchema]
 }, {timestamps: true});
 
 horseSchema.plugin(mongoose_fuzzy_searching, {fields: ['name']});
