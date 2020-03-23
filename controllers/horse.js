@@ -137,6 +137,30 @@ exports.deletePassport = (req, res, next) => {
   });
 }
 
+//Create a new horse lodging
+exports.createLodging = async (req, res, next) => {
+  try {
+    await Horse.findByIdAndUpdate(req.params.horseId, { $set: req.body.horse }, { new: true })
+      .exec((err, horse) => {
+        if (err) return next(err);
+        res.status(201).send(horse);
+      });
+    } catch(err) {
+      return next(err);
+    }
+};
+
+//Delete an existing horse lodging
+exports.deleteLodging = async (req, res, next) => {
+  try {
+    await Horse.findByIdAndUpdate(req.params.horseId, {$pull: {lodgings: {_id: req.params.lodgingId}}}, (err, horse) => {
+      res.status(200).send(`The lodging was succesfully removed`);
+    });
+  } catch(err) {
+    return next(err);
+  }
+};
+
 //Get horse count
 // exports.getHorseCount = async (req, res, next) => {
 //   try {
