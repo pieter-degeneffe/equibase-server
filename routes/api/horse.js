@@ -13,7 +13,7 @@ router.post('/:horseId/passport', horseController.createPassport);
 router.delete('/:horseId/passport', horseController.deletePassport);
 
 router.post('/:horseId/lodging', horseController.createLodging);
-router.delete('/:horseId/lodging', horseController.deleteLodging);
+router.delete('/:horseId/lodging/:lodgingId', horseController.deleteLodging);
 
 //router.get('/count', horseController.getHorseCount);
 
