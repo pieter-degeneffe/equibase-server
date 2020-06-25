@@ -72,7 +72,7 @@ let horseSchema = new Schema({
   },
   date_of_death: {
     type: Date,
-    max: [Date.now, "Date of birth can't be in the future"]
+    max: [Date.now, "Date of death can't be in the future"]
   },
   keep_for_food_chain: {
     type: Boolean

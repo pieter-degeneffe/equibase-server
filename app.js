@@ -36,6 +36,8 @@ if(process.env.NODE_ENV === 'production') {
 //Mounting of routes
 const horse = require('./routes/api/horse');
 app.use('/api/horse', horse);
+const icsi = require('./routes/api/icsi');
+app.use('/api/icsi', icsi);
 const customer = require('./routes/api/customer');
 app.use('/api/customer', customer);
 const location = require('./routes/api/location');
@@ -50,7 +52,7 @@ app.use('/api/nitrogen-container', nitrogenContainer);
 app.use(express.static('public'))
 
 //Error handling middleware - must be the last among other middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   const statusCode = err.statusCode ? err.statusCode : 500
   const message = err.message
   res.status(statusCode).json({

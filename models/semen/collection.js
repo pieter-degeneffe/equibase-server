@@ -1,3 +1,4 @@
+const colors = require('../../consts').colors;
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -37,7 +38,7 @@ let semenCollectionSchema = new Schema(
     },
     color: {
       type: String,
-      enum: ['Rood','Oranje','Geel','Groen','Blauw','Indigo','Violet']
+      enum: colors
     },
     type: {
       type: String,
@@ -48,11 +49,6 @@ let semenCollectionSchema = new Schema(
     production_date: {
       type: Date,
       max: [Date.now, "Production date can't be in the future"]
-    },
-    owner : {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Customer',
-      required: [true, 'Owner is a required field']
     },
     modifications: [{ type: mongoose.Schema.Types.ObjectId, ref: 'SemenCollectionModification' }]
   },
