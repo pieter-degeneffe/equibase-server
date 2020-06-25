@@ -1,4 +1,5 @@
 const Horse = require('../models/horse.js');
+const Embryo = require('../models/embryo.js');
 var fs = require('fs');
 
 //Create a new horse
@@ -83,7 +84,14 @@ exports.getHorse = async (req,res,next) => {
     return next(err);
   }
 };
-
+exports.getEmbryosOfHorse= async (req,res,next) => {
+    try{
+      const embryos = await Embryo.find({surrogate :req.params.horseId}).exec();
+      return res.json({ embryos });
+    }catch (e) {
+      return next(e);
+  }
+}
 //Update a horse
 exports.updateHorse = async (req, res, next) => {
   try {

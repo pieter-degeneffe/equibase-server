@@ -58,6 +58,22 @@ let embryoSchema = new Schema({
     type: Boolean,
     default: true,
   },
+  surrogate: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Horse',
+  }
 }, { timestamps: true });
+
+const autoPopulate = function (next) {
+  this.populate('donor_mare')
+    .populate('donor_stallion')
+    .populate('surrogate')
+    .populate('location.container')
+    .populate('owner');
+  next();
+};
+
+embryoSchema.pre('findOne', autoPopulate);
+embryoSchema.pre('find', autoPopulate);
 
 module.exports = mongoose.model('Embryo', embryoSchema);

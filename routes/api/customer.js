@@ -14,6 +14,7 @@ router.delete('/:customerId/contact/:contactId', customerController.deleteContac
 
 router.get('/search/:searchValue', customerController.getCustomerSearch);
 router.get('/:customerId/horse', customerController.getHorsesOfCustomer);
+router.get('/:customerId/embryos', customerController.getEmbryosOfCustomer);
 
 // router.get('/count', customerController.getCustomerCount);
 // router.get('/countries', customerController.getCountries);

@@ -1,5 +1,6 @@
 const Customer = require('../models/customer.js');
 const Horse = require('../models/horse.js');
+const Embryo = require('../models/embryo.js');
 
 //Create a new customer
 exports.createCustomer = async (req, res, next) => {
@@ -124,7 +125,14 @@ exports.getHorsesOfCustomer = async (req,res,next) => {
     return next(err);
   }
 };
-
+exports.getEmbryosOfCustomer = async (req,res,next) => {
+  try{
+    const embryos = await Embryo.find({owner:req.params.customerId}).exec();
+    return res.json({ embryos });
+  }catch (e) {
+    return next(e);
+  }
+}
 //Get customer count
 // exports.getCustomerCount = async (req, res, next) => {
 //   try {
