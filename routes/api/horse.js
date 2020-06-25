@@ -15,6 +15,8 @@ router.delete('/:horseId/passport', horseController.deletePassport);
 router.post('/:horseId/lodging', horseController.createLodging);
 router.delete('/:horseId/lodging/:lodgingId', horseController.deleteLodging);
 
+router.get('/:horseId/embryos', horseController.getEmbryosOfHorse);
+
 //router.get('/count', horseController.getHorseCount);
 
 module.exports = router;
