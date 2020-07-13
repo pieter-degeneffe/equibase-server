@@ -9,8 +9,8 @@ exports.createHorse = async (req, res, next) => {
     await horse.save((err) => {
       if (err) return next(err);
       res.status(201).send(horse);
-    })
-  } catch(err) {
+    });
+  } catch (err) {
     return next(err);
   }
 };
@@ -19,26 +19,26 @@ exports.createHorse = async (req, res, next) => {
 exports.getAllHorses = async (req, res, next) => {
   try {
     let limit, page, sortBy, sortDesc;
-    if(req.query.death === 'false') req.query.death = {$ne: true};
-    if(req.query.surrogate === 'false') req.query.surrogate = {$ne: true};
-    if(req.query.stud_horse === 'false') req.query.stud_horse = {$ne: true};
-    if(req.query.location === 'true') req.query.location = {$ne: null};
-    if(req.query.date_of_birth === 'true') req.query.date_of_birth = {$ne: null};
-    if(req.query.surrogate_uid === 'true') req.query.surrogate_uid = {$ne: null};
-    if(req.query.microchip === 'true') req.query.microchip = {$ne: null};
-    if(req.query.limit) {
+    if (req.query.death === 'false') req.query.death = { $ne: true };
+    if (req.query.surrogate === 'false') req.query.surrogate = { $ne: true };
+    if (req.query.stud_horse === 'false') req.query.stud_horse = { $ne: true };
+    if (req.query.location === 'true') req.query.location = { $ne: null };
+    if (req.query.date_of_birth === 'true') req.query.date_of_birth = { $ne: null };
+    if (req.query.surrogate_uid === 'true') req.query.surrogate_uid = { $ne: null };
+    if (req.query.microchip === 'true') req.query.microchip = { $ne: null };
+    if (req.query.limit) {
       limit = parseInt(req.query.limit);
       delete req.query.limit;
     }
-    if(req.query.page) {
+    if (req.query.page) {
       page = parseInt(req.query.page);
       delete req.query.page;
     }
-    if(req.query.sortBy) {
+    if (req.query.sortBy) {
       sortBy = req.query.sortBy[0];
       delete req.query.sortBy;
     }
-    if(req.query.sortDesc) {
+    if (req.query.sortDesc) {
       req.query.sortDesc[0] === 'true' ? sortDesc = -1 : sortDesc = 1;
       delete req.query.sortDesc;
     }
@@ -47,13 +47,13 @@ exports.getAllHorses = async (req, res, next) => {
       .populate('owner')
       .skip((limit * page) - limit)
       .limit(limit)
-      .sort({[sortBy]: sortDesc})
+      .sort({ [sortBy]: sortDesc })
       .exec((err, horses) => {
         if (err) res.status(404).send();
         Horse.countDocuments(req.query)
           .exec((err, total) => {
             if (err) res.status(404).send();
-            res.status(200).json({horses, total});
+            res.status(200).json({ horses, total });
           });
       });
   } catch (err) {
@@ -62,9 +62,9 @@ exports.getAllHorses = async (req, res, next) => {
 };
 
 //Get a horse
-exports.getHorse = async (req,res,next) => {
+exports.getHorse = async (req, res, next) => {
   try {
-    if(req.route.methods.get && req.route.path === "/:horseId") {
+    if (req.route.methods.get && req.route.path === '/:horseId') {
       await Horse.findById(req.params.horseId)
         .populate('owner')
         .exec((err, horse) => {
@@ -84,39 +84,39 @@ exports.getHorse = async (req,res,next) => {
     return next(err);
   }
 };
-exports.getEmbryosOfHorse= async (req,res,next) => {
-    try{
-      const embryos = await Embryo.find({surrogate :req.params.horseId}).exec();
-      return res.json({ embryos });
-    }catch (e) {
-      return next(e);
+exports.getEmbryosOfHorse = async (req, res, next) => {
+  try {
+    const embryos = await Embryo.find({ ...req.query, surrogate: req.params.horseId }).exec();
+    return res.json({ embryos });
+  } catch (e) {
+    return next(e);
   }
-}
+};
 //Update a horse
 exports.updateHorse = async (req, res, next) => {
   try {
-    let unset = {}
-    if(!req.body.horse.location) unset.location = "";
+    let unset = {};
+    if (!req.body.horse.location) unset.location = '';
     await Horse.findByIdAndUpdate(req.params.horseId, { $set: req.body.horse, $unset: unset }, { new: true })
-    .populate('owner')
-    .populate('location')
-    .exec((err, horse) => {
-      if (err) return next(err);
-      res.status(201).send(horse);
-    });
-  } catch(err) {
+      .populate('owner')
+      .populate('location')
+      .exec((err, horse) => {
+        if (err) return next(err);
+        res.status(201).send(horse);
+      });
+  } catch (err) {
     return next(err);
   }
 };
 
 //Delete a horse
-exports.deleteHorse = async (req,res,next) => {
+exports.deleteHorse = async (req, res, next) => {
   try {
     Horse.findByIdAndDelete(req.params.horseId, (err, horse) => {
       if (err) return next(err);
       res.status(200).send(`The horse was succesfully deleted`);
     });
-  } catch(err) {
+  } catch (err) {
     return next(err);
   }
 };
@@ -124,10 +124,10 @@ exports.deleteHorse = async (req,res,next) => {
 //Create a new horse passport
 exports.createPassport = async (req, res, next) => {
   let file = req.files.file;
-  let filename = 'files/horse/passport/' + req.params.horseId +'.pdf';
-  file.mv('public/' + filename, function(err) {
+  let filename = 'files/horse/passport/' + req.params.horseId + '.pdf';
+  file.mv('public/' + filename, function (err) {
     if (err) return res.status(500).send(err);
-    Horse.findByIdAndUpdate(req.params.horseId, {$set: { passport: filename}}, { new: true }, (err, horse) => {
+    Horse.findByIdAndUpdate(req.params.horseId, { $set: { passport: filename } }, { new: true }, (err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
     });
@@ -136,14 +136,14 @@ exports.createPassport = async (req, res, next) => {
 
 //Delete a horse passport
 exports.deletePassport = (req, res, next) => {
-  let filename = 'public/files/horse/passport/' + req.params.horseId +'.pdf';
-  fs.unlink(filename, function() {
-    Horse.findByIdAndUpdate(req.params.horseId, {$unset: { passport: 1}}, { new: true }, (err, horse) => {
+  let filename = 'public/files/horse/passport/' + req.params.horseId + '.pdf';
+  fs.unlink(filename, function () {
+    Horse.findByIdAndUpdate(req.params.horseId, { $unset: { passport: 1 } }, { new: true }, (err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
     });
   });
-}
+};
 
 //Create a new horse lodging
 exports.createLodging = async (req, res, next) => {
@@ -153,18 +153,18 @@ exports.createLodging = async (req, res, next) => {
         if (err) return next(err);
         res.status(201).send(horse);
       });
-    } catch(err) {
-      return next(err);
-    }
+  } catch (err) {
+    return next(err);
+  }
 };
 
 //Delete an existing horse lodging
 exports.deleteLodging = async (req, res, next) => {
   try {
-    await Horse.findByIdAndUpdate(req.params.horseId, {$pull: {lodgings: {_id: req.params.lodgingId}}}, (err, horse) => {
+    await Horse.findByIdAndUpdate(req.params.horseId, { $pull: { lodgings: { _id: req.params.lodgingId } } }, (err, horse) => {
       res.status(200).send(`The lodging was succesfully removed`);
     });
-  } catch(err) {
+  } catch (err) {
     return next(err);
   }
 };

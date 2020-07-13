@@ -27,8 +27,11 @@ let embryoSchema = new Schema({
   },
   date_imported: {
     type: Date,
-    max: [Date.now, 'Date of birth can\'t be in the future'],
+    max: [Date.now, 'Date of import can\'t be in the future'],
     required: [true, 'date_imported is a required field'],
+  },
+  date_transferred: {
+    type: Date,
   },
   color: {
     type: String,
@@ -37,6 +40,21 @@ let embryoSchema = new Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Customer'
+  },
+  date_exported: {
+    type: Date,
+  },
+  surrogate: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Horse',
+  },
+  active: {
+    type: Boolean,
+    default: true,
+  },
+  in_house: {
+    type: Boolean,
+    default: true,
   },
   location: {
     container: {
@@ -54,14 +72,6 @@ let embryoSchema = new Schema({
       required: [true, 'Position is a required field'],
     }
   },
-  active: {
-    type: Boolean,
-    default: true,
-  },
-  surrogate: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Horse',
-  }
 }, { timestamps: true });
 
 const autoPopulate = function (next) {
@@ -73,7 +83,8 @@ const autoPopulate = function (next) {
   next();
 };
 
-embryoSchema.pre('findOne', autoPopulate);
 embryoSchema.pre('find', autoPopulate);
+embryoSchema.pre('findOne', autoPopulate);
+embryoSchema.pre('findByIdAndUpdate', autoPopulate);
 
 module.exports = mongoose.model('Embryo', embryoSchema);

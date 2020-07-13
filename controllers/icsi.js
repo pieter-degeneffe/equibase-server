@@ -32,7 +32,7 @@ exports.createICSI = async (req, res, next) => {
 //Get all ICSIs
 exports.getAllICSI = async (req, res, next) => {
   try {
-    let limit, page, sortBy, sortDesc;
+    let limit, page, sortBy, sortDesc, container, tube;
 
     if (req.query.limit) {
       limit = parseInt(req.query.limit);
@@ -50,6 +50,14 @@ exports.getAllICSI = async (req, res, next) => {
       sortDesc = req.query.sortDesc[0] === 'true' ? -1 : 1;
       delete req.query.sortDesc;
     }
+    if (req.query.container) {
+      container = req.query.container;
+      delete req.query.container;
+    }
+    if (req.query.tube) {
+      tube = req.query.tube;
+      delete req.query.tube;
+    }
     await ICSI.find(req.query)
       .skip((limit * page) - limit)
       .limit(limit)
@@ -59,7 +67,47 @@ exports.getAllICSI = async (req, res, next) => {
         ICSI.countDocuments(req.query)
           .exec((err, total) => {
             if (err) res.status(404).send();
-            res.status(200).json({ icsis, total });
+            res.status(200).json({
+              icsis: icsis.filter(icsi => (!container || icsi.embryos[0].location.container._id == container) && (!tube || icsi.embryos[0].location.tube == tube)),
+              total
+            });
+          });
+      });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+//Get all Embryos
+exports.getAllEmbryos = async (req, res, next) => {
+  try {
+    let limit, page, sortBy, sortDesc;
+    if (req.query.limit) {
+      limit = parseInt(req.query.limit);
+      delete req.query.limit;
+    }
+    if (req.query.page) {
+      page = parseInt(req.query.page);
+      delete req.query.page;
+    }
+    if (req.query.sortBy) {
+      sortBy = req.query.sortBy[0];
+      delete req.query.sortBy;
+    }
+    if (req.query.sortDesc) {
+      sortDesc = req.query.sortDesc[0] === 'true' ? -1 : 1;
+      delete req.query.sortDesc;
+    }
+    await Embryo.find(req.query)
+      .skip((limit * page) - limit)
+      .limit(limit)
+      .sort({ [sortBy]: sortDesc })
+      .exec((err, embryos) => {
+        if (err) res.status(404).send();
+        Embryo.countDocuments(req.query)
+          .exec((err, total) => {
+            if (err) res.status(404).send();
+            res.status(200).json({ embryos, total });
           });
       });
   } catch (err) {
@@ -70,7 +118,7 @@ exports.getAllICSI = async (req, res, next) => {
 //Get a ICSI
 exports.getICSI = async (req, res, next) => {
   try {
-    await ICSI.findOne({ code:req.params.icsiId })
+    await ICSI.findOne({ code: req.params.icsiId })
       .exec((err, icsi) => {
         if (err) return next(err);
         res.status(200).send(icsi);
@@ -114,5 +162,34 @@ exports.addEmbryos = async (req, res, next) => {
     res.json(populated);
   } catch (err) {
     return next(err);
+  }
+};
+
+exports.transferEmbryo = async (req, res, next) => {
+  try {
+    const { embryoId, surrogateId, transferDate, } = req.body;
+    const embryo = await Embryo.findByIdAndUpdate(embryoId, {
+      surrogate: surrogateId,
+      date_transferred: transferDate,
+      active: false
+    }).exec();
+    res.json(embryo);
+  } catch (e) {
+    return next(e);
+  }
+};
+
+exports.exportEmbryo = async (req, res, next) => {
+  try {
+    const { embryoId, customerId, exportDate, inHouse = true } = req.body;
+    const embryo = await Embryo.findByIdAndUpdate(embryoId, {
+      owner: customerId,
+      date_exported: exportDate,
+      in_house: inHouse,
+      active: inHouse ? active : false,
+    }).exec();
+    res.json(embryo);
+  } catch (e) {
+    return next(e);
   }
 };

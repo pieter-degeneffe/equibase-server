@@ -127,7 +127,7 @@ exports.getHorsesOfCustomer = async (req,res,next) => {
 };
 exports.getEmbryosOfCustomer = async (req,res,next) => {
   try{
-    const embryos = await Embryo.find({owner:req.params.customerId}).exec();
+    const embryos = await Embryo.find({...req.query, owner:req.params.customerId}).exec();
     return res.json({ embryos });
   }catch (e) {
     return next(e);
