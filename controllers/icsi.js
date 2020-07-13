@@ -32,7 +32,7 @@ exports.createICSI = async (req, res, next) => {
 //Get all ICSIs
 exports.getAllICSI = async (req, res, next) => {
   try {
-    let limit, page, sortBy, sortDesc;
+    let limit, page, sortBy, sortDesc, container, tube;
 
     if (req.query.limit) {
       limit = parseInt(req.query.limit);
@@ -50,6 +50,14 @@ exports.getAllICSI = async (req, res, next) => {
       sortDesc = req.query.sortDesc[0] === 'true' ? -1 : 1;
       delete req.query.sortDesc;
     }
+    if (req.query.container) {
+      container = req.query.container;
+      delete req.query.container;
+    }
+    if (req.query.tube) {
+      tube = req.query.tube;
+      delete req.query.tube;
+    }
     await ICSI.find(req.query)
       .skip((limit * page) - limit)
       .limit(limit)
@@ -59,7 +67,10 @@ exports.getAllICSI = async (req, res, next) => {
         ICSI.countDocuments(req.query)
           .exec((err, total) => {
             if (err) res.status(404).send();
-            res.status(200).json({ icsis, total });
+            res.status(200).json({
+              icsis: icsis.filter(icsi => (!container || icsi.embryos[0].location.container._id == container) && (!tube || icsi.embryos[0].location.tube == tube)),
+              total
+            });
           });
       });
   } catch (err) {
@@ -170,11 +181,12 @@ exports.transferEmbryo = async (req, res, next) => {
 
 exports.exportEmbryo = async (req, res, next) => {
   try {
-    const { embryoId, customerId, exportDate, inHouse=true } = req.body;
+    const { embryoId, customerId, exportDate, inHouse = true } = req.body;
     const embryo = await Embryo.findByIdAndUpdate(embryoId, {
       owner: customerId,
       date_exported: exportDate,
-      in_house: inHouse
+      in_house: inHouse,
+      active: inHouse ? active : false,
     }).exec();
     res.json(embryo);
   } catch (e) {
