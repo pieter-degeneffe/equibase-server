@@ -1,5 +1,6 @@
 const ICSI = require('../models/icsi.js');
 const Embryo = require('../models/embryo.js');
+const { cleanQuery } = require('./helpers.js');
 
 //Create a new ICSI
 exports.createICSI = async (req, res, next) => {
@@ -31,39 +32,25 @@ exports.createICSI = async (req, res, next) => {
 //Get all ICSIs
 exports.getAllICSI = async (req, res, next) => {
   try {
-    let limit, page, sortBy, sortDesc, container, tube;
+    let container, tube;
 
-    if (req.query.limit) {
-      limit = parseInt(req.query.limit);
-      delete req.query.limit;
+    const { limit, page, sortBy, sortDesc, query } = cleanQuery(req);
+
+    if (query.container) {
+      container = query.container;
+      delete query.container;
     }
-    if (req.query.page) {
-      page = parseInt(req.query.page);
-      delete req.query.page;
+    if (query.tube) {
+      tube = query.tube;
+      delete query.tube;
     }
-    if (req.query.sortBy) {
-      sortBy = req.query.sortBy[0];
-      delete req.query.sortBy;
-    }
-    if (req.query.sortDesc) {
-      sortDesc = req.query.sortDesc[0] === 'true' ? -1 : 1;
-      delete req.query.sortDesc;
-    }
-    if (req.query.container) {
-      container = req.query.container;
-      delete req.query.container;
-    }
-    if (req.query.tube) {
-      tube = req.query.tube;
-      delete req.query.tube;
-    }
-    await ICSI.find(req.query)
+    await ICSI.find(query)
       .skip((limit * page) - limit)
       .limit(limit)
       .sort({ [sortBy]: sortDesc })
       .exec((err, icsis) => {
         if (err) res.status(404).send();
-        ICSI.countDocuments(req.query)
+        ICSI.countDocuments(query)
           .exec((err, total) => {
             if (err) res.status(404).send();
             res.status(200).json({
@@ -135,7 +122,7 @@ exports.deleteICSI = async (req, res, next) => {
         console.log('Arne: err= ', err);
         return next(err);
       }
-      res.status(200).send(`The ICSI was succesfully deleted`);
+      res.status(200).send(`The ICSI was successfully deleted`);
     });
   } catch (err) {
     return next(err);

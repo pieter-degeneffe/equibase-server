@@ -48,6 +48,8 @@ const semen = require('./routes/api/semen');
 app.use('/api/semen', semen);
 const nitrogenContainer = require('./routes/api/nitrogenContainer');
 app.use('/api/nitrogen-container', nitrogenContainer);
+const product = require('./routes/api/product');
+app.use('/api/product', product);
 
 app.use(express.static('public'));
 
