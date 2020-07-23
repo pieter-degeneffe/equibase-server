@@ -10,7 +10,7 @@ require('dotenv').config();
 const fileUpload = require('express-fileupload');
 const authCheck = require('./middleware/auth.js');
 
- // create the express app
+// create the express app
 const PORT = process.env.PORT || 8081; // client is running on 8080
 const app = express();
 
@@ -29,7 +29,7 @@ mongoose.set('useCreateIndex', true);
 mongoose.connect(process.env.MONGODB_URI);
 
 //Use Auth0 authentication on production
-if(process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   app.use('/', authCheck);
 }
 
@@ -49,14 +49,14 @@ app.use('/api/semen', semen);
 const nitrogenContainer = require('./routes/api/nitrogenContainer');
 app.use('/api/nitrogen-container', nitrogenContainer);
 
-app.use(express.static('public'))
+app.use(express.static('public'));
 
 //Error handling middleware - must be the last among other middleware
 app.use((err, req, res) => {
-  const statusCode = err.statusCode ? err.statusCode : 500
-  const message = err.message
+  const statusCode = err.statusCode ? err.statusCode : 500;
+  const message = err.message;
   res.status(statusCode).json({
-    status: "error",
+    status: 'error',
     statusCode,
     message
   });
@@ -64,5 +64,5 @@ app.use((err, req, res) => {
 
 // Start the server
 app.listen(PORT || 8081, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${ PORT }`);
 });
