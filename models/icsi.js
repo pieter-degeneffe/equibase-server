@@ -37,4 +37,5 @@ const autoPopulate = function (next) {
 };
 icsiSchema.pre('find', autoPopulate);
 icsiSchema.pre('findOne', autoPopulate);
+icsiSchema.pre('findByIdAndUpdate', autoPopulate);
 module.exports = mongoose.model('ICSI', icsiSchema, '');

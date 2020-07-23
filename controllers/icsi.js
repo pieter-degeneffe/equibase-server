@@ -4,11 +4,10 @@ const Embryo = require('../models/embryo.js');
 //Create a new ICSI
 exports.createICSI = async (req, res, next) => {
   try {
-    const { code, donor_stallion, donor_mare, amount, collectionColor, owner, location, collectionDate } = req.body.icsi;
-    const embryos = [];
-    for (let i = 0; i < amount; i++) {
-      let embryo = new Embryo({
-        code: `${ i + 1 }-${ code }`,
+    const { code, donor_stallion, donor_mare, amount, collectionColor, owner, location, collectionDate, embryoCodes } = req.body.icsi;
+    const embryos =  await Promise.all(embryoCodes.map(async code => {
+      const embryo = new Embryo({
+        code,
         donor_mare,
         donor_stallion,
         batch_code: code,
@@ -18,8 +17,8 @@ exports.createICSI = async (req, res, next) => {
         location: { ...location, position: 'Onder' }
       });
       await embryo.save();
-      embryos.push(embryo);
-    }
+      return embryo;
+    }));
     const icsi = new ICSI({ embryos, code, donor_mare, donor_stallion, });
     await icsi.save();
     res.status(201).send(icsi);
