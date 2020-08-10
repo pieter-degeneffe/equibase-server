@@ -67,23 +67,8 @@ exports.getAllICSI = async (req, res, next) => {
 //Get all Embryos
 exports.getAllEmbryos = async (req, res, next) => {
   try {
-    let limit, page, sortBy, sortDesc;
-    if (req.query.limit) {
-      limit = parseInt(req.query.limit);
-      delete req.query.limit;
-    }
-    if (req.query.page) {
-      page = parseInt(req.query.page);
-      delete req.query.page;
-    }
-    if (req.query.sortBy) {
-      sortBy = req.query.sortBy[0];
-      delete req.query.sortBy;
-    }
-    if (req.query.sortDesc) {
-      sortDesc = req.query.sortDesc[0] === 'true' ? -1 : 1;
-      delete req.query.sortDesc;
-    }
+    const { limit, page, sortBy, sortDesc } = cleanQuery(req);
+
     await Embryo.find(req.query)
       .skip((limit * page) - limit)
       .limit(limit)
