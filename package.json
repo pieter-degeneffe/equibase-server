@@ -20,7 +20,11 @@
     "express-jwt": "^6.0.0",
     "jwks-rsa": "^1.6.0",
     "mongoose": "^5.8.3",
-    "mongoose-fuzzy-searching": "^1.1.8"
+    "mongoose-fuzzy-searching": "^1.1.8",
+    "mongoose-to-swagger": "^1.0.3",
+    "morgan": "^1.10.0",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"

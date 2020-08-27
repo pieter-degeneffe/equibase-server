@@ -1,6 +1,7 @@
 const Horse = require('../models/horse.js');
 const Embryo = require('../models/embryo.js');
 var fs = require('fs');
+const { cleanQuery } = require('./helpers');
 
 //Create a new horse
 exports.createHorse = async (req, res, next) => {
@@ -18,7 +19,6 @@ exports.createHorse = async (req, res, next) => {
 //Get all horses
 exports.getAllHorses = async (req, res, next) => {
   try {
-    let limit, page, sortBy, sortDesc;
     if (req.query.death === 'false') req.query.death = { $ne: true };
     if (req.query.surrogate === 'false') req.query.surrogate = { $ne: true };
     if (req.query.stud_horse === 'false') req.query.stud_horse = { $ne: true };
@@ -26,22 +26,9 @@ exports.getAllHorses = async (req, res, next) => {
     if (req.query.date_of_birth === 'true') req.query.date_of_birth = { $ne: null };
     if (req.query.surrogate_uid === 'true') req.query.surrogate_uid = { $ne: null };
     if (req.query.microchip === 'true') req.query.microchip = { $ne: null };
-    if (req.query.limit) {
-      limit = parseInt(req.query.limit);
-      delete req.query.limit;
-    }
-    if (req.query.page) {
-      page = parseInt(req.query.page);
-      delete req.query.page;
-    }
-    if (req.query.sortBy) {
-      sortBy = req.query.sortBy[0];
-      delete req.query.sortBy;
-    }
-    if (req.query.sortDesc) {
-      req.query.sortDesc[0] === 'true' ? sortDesc = -1 : sortDesc = 1;
-      delete req.query.sortDesc;
-    }
+
+    const { limit, page, sortBy, sortDesc } = cleanQuery(req);
+
     await Horse.find(req.query)
       .populate('location')
       .populate('owner')
