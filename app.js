@@ -4,7 +4,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-//const morgan = require('morgan');
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const fileUpload = require('express-fileupload');
@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 8081; // client is running on 8080
 const app = express();
 
 // make the app use dependencies
-//app.use(morgan('dev'))
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
@@ -34,6 +34,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 //Mounting of routes
+const swagger = require('./routes/api/swagger');
+app.use('/api/docs', swagger);
 const horse = require('./routes/api/horse');
 app.use('/api/horse', horse);
 const icsi = require('./routes/api/icsi');
@@ -50,6 +52,8 @@ const nitrogenContainer = require('./routes/api/nitrogenContainer');
 app.use('/api/nitrogen-container', nitrogenContainer);
 const product = require('./routes/api/product');
 app.use('/api/product', product);
+const stock = require('./routes/api/stock');
+app.use('/api/stock', stock);
 
 app.use(express.static('public'));
 

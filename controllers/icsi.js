@@ -6,7 +6,7 @@ const { cleanQuery } = require('./helpers.js');
 exports.createICSI = async (req, res, next) => {
   try {
     const { code, donor_stallion, donor_mare, amount, collectionColor, owner, location, collectionDate, embryoCodes } = req.body.icsi;
-    const embryos =  await Promise.all(embryoCodes.map(async code => {
+    const embryos = await Promise.all(embryoCodes.map(async code => {
       const embryo = new Embryo({
         code,
         donor_mare,
@@ -53,6 +53,9 @@ exports.getAllICSI = async (req, res, next) => {
         ICSI.countDocuments(query)
           .exec((err, total) => {
             if (err) res.status(404).send();
+            if (sortBy && sortBy === 'amount') {
+              icsis = icsis.sort(icsi => icsi.embryos.length * -sortDesc);
+            }
             res.status(200).json({
               icsis: icsis.filter(icsi => (!container || icsi.embryos[0].location.container._id == container) && (!tube || icsi.embryos[0].location.tube == tube)),
               total

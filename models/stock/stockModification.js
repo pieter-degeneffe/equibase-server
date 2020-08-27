@@ -4,13 +4,19 @@ const Schema = mongoose.Schema;
 const stockModificationSchema = new Schema({
   type: {
     type: String,
-    enum: ['Export','Controle'],
+    enum: ['Aankoop','Export','Controle'],
     required: [true, 'Type is a required field'],
     immutable: true
   },
   product : {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product'
+    ref: 'Product',
+    required:true,
+  },
+  batch: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref:'ProductBatch',
+    required:true
   },
   amount: {
     type: Number,
@@ -20,6 +26,7 @@ const stockModificationSchema = new Schema({
 
 const autoPopulate = function (next) {
   this.populate('product');
+  this.populate('batch');
   next();
 };
 

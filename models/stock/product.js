@@ -12,31 +12,10 @@ let productSchema = new Schema({
   type: {
     type: String,
     enum: ['Materiaal', 'Geneesmiddel', 'Voedingssupplement', 'Ontsmettingsmiddel'],
+    required: true,
   },
   CNK: {
     type: String,
-    trim: true,
-    maxlength: [64, 'Max length is 64 characters'],
-  },
-  lotNumber: {
-    type: String,
-    trim: true,
-    required: true,
-    maxlength: [64, 'Max length is 64 characters'],
-  },
-  expirationDate: {
-    type: Date,
-    trim: true,
-    required: true,
-    maxlength: [64, 'Max length is 64 characters'],
-  },
-  buyInPrice: {
-    type: String,
-    trim: true,
-    maxlength: [64, 'Max length is 64 characters'],
-  },
-  amount: {
-    type: Number,
     trim: true,
     required: true,
     maxlength: [64, 'Max length is 64 characters'],
@@ -47,42 +26,40 @@ let productSchema = new Schema({
     required: true,
     maxlength: [64, 'Max length is 64 characters'],
   },
-  initialAmount: {
-    type: Number,
-    maxlength: [64, 'Max length is 64 characters'],
+  tax: {
+    type: String,
+    enum: ['6%', '21',],
+    required: true,
   },
   sellingPrice: {
     type: Number,
+    required: true,
     maxlength: [64, 'Max length is 64 characters'],
   },
   sellingPricePerUnit: {
+    required: true,
     type: Number,
     maxlength: [64, 'Max length is 64 characters'],
   },
   supplementAdministration: {
+    required: true,
     type: Number,
-    maxlength: [64, 'Max length is 64 characters'],
-  },
-  unitSellingPrice: {
-    type: Number,
-    maxlength: [64, 'Max length is 64 characters'],
-  },
-  unitAdministrationPrice: {
-    type: Number,
-    maxlength: [64, 'Max length is 64 characters'],
-  },
-  tax: {
-    type: String,
-    enum: ['6%', '21',],
-  },
-  supplier: {
-    type: String,
-    trim: true,
     maxlength: [64, 'Max length is 64 characters'],
   },
   waitingTime: {
     type: String,
+    required: true,
     trim: true,
+    maxlength: [64, 'Max length is 64 characters'],
+  },
+  unitSellingPrice: {
+    type: Number,
+    required: true,
+    maxlength: [64, 'Max length is 64 characters'],
+  },
+  unitAdministrationPrice: {
+    required: true,
+    type: Number,
     maxlength: [64, 'Max length is 64 characters'],
   },
 }, { timestamps: true });
