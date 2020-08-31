@@ -55,10 +55,11 @@ exports.updateStock = async (req, res, next) => {
   }
 };
 
-exports.addBatch = async (req, res, next) => {
+exports.addBatch = async (req, res) => {
   try {
-    try {
-      const batch = new ProductBatch(req.body);
+    const batch = new ProductBatch(req.body);
+    const productExists = await Product.exists({ _id: req.body.product });
+    if (productExists) {
       const stockModification = new StockModification({
         batch: batch._id,
         product: req.body.product,
@@ -67,12 +68,12 @@ exports.addBatch = async (req, res, next) => {
       });
       await Promise.all([stockModification.save(),
         await batch.save()]);
-      res.status(201).send(batch);
-    } catch (e) {
-      res.status(400).send(e);
+      return res.status(201).send(batch);
+    } else {
+      return res.status(404).send({ errors: { notFound: `Product with ID ${ req.body.product } does not exist` } });
     }
-  } catch (err) {
-    console.log('Arne: err= ', err);
-    return next(err);
+  } catch (e) {
+    console.log('Arne: e= ', e);
+    res.status(400).send(e);
   }
 };
