@@ -1,6 +1,7 @@
 const Horse = require('../models/horse.js');
 const Embryo = require('../models/embryo.js');
 var fs = require('fs');
+const { deleteItem } = require('../utils/mongoose');
 const { cleanQuery } = require('./helpers');
 
 //Create a new horse
@@ -99,10 +100,8 @@ exports.updateHorse = async (req, res, next) => {
 //Delete a horse
 exports.deleteHorse = async (req, res, next) => {
   try {
-    Horse.findByIdAndDelete(req.params.horseId, (err, horse) => {
-      if (err) return next(err);
-      res.status(200).send(`The horse was succesfully deleted`);
-    });
+    await deleteItem(Horse, req.params.id);
+    res.status(200).send(`The horse was successfully deleted`);
   } catch (err) {
     return next(err);
   }

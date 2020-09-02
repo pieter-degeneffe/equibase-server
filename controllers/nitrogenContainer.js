@@ -1,4 +1,5 @@
 const NitrogenContainer = require('../models/nitrogenContainer.js');
+const { deleteItem } = require('../utils/mongoose');
 
 //Create a new nitrogen container
 exports.createNitrogenContainer = async (req, res, next) => {
@@ -41,12 +42,10 @@ exports.updateNitrogenContainer = async (req, res, next) => {
 //Delete a nitrogen container
 exports.deleteNitrogenContainer = async (req,res,next) => {
   try {
-    NitrogenContainer.findByIdAndDelete(req.params.nitrogenContainerId, (err, nitrogenContainer) => {
-      if (err) return next(err);
-      res.status(200).send(`The customer was succesfully deleted`);
-    });
+      await deleteItem(NitrogenContainer, req.params.nitrogenContainerId);
+      res.status(200).send(`The nitrogencontainer was successfully deleted`);
   }
   catch(err) {
-    return res.status(500).send(err);
+    next(err);
   }
 };
