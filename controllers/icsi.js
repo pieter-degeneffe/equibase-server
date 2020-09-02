@@ -1,5 +1,6 @@
 const ICSI = require('../models/icsi.js');
 const Embryo = require('../models/embryo.js');
+const { deleteItem } = require('../utils/mongoose');
 const { cleanQuery } = require('./helpers.js');
 
 //Create a new ICSI
@@ -105,13 +106,8 @@ exports.getICSI = async (req, res, next) => {
 //Delete a ICSI
 exports.deleteICSI = async (req, res, next) => {
   try {
-    ICSI.findByIdAndDelete(req.params.icsiId, (err) => {
-      if (err) {
-        console.log('Arne: err= ', err);
-        return next(err);
-      }
-      res.status(200).send(`The ICSI was successfully deleted`);
-    });
+    await deleteItem(ICSI, req.params.id);
+    res.status(200).send(`The ICSI was successfully deleted`);
   } catch (err) {
     return next(err);
   }

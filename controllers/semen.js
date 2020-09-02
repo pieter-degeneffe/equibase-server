@@ -1,5 +1,6 @@
 const SemenCollection = require('../models/semen/collection');
 const SemenCollectionModification = require('../models/semen/collectionModification.js');
+const { deleteItem } = require('../utils/mongoose');
 
 //Create a new semen collections
 exports.createSemenCollection = async (req, res, next) => {
@@ -97,11 +98,8 @@ exports.updateSemenCollection = async (req, res, next) => {
 //Delete a semen collection
 exports.deleteSemenCollection = async (req,res,next) => {
   try {
-    SemenCollection.findByIdAndDelete(req.params.id, (err, semenCollection) => {
-      semenCollection.modifications.map(modification => console.log(modification));
-      if (err) return next(err);
-      res.status(204).send(`The semen collection was succesfully deleted`);
-    });
+    await deleteItem(SemenCollection, req.params.id);
+    res.status(204).send(`The semen collection was succesfully deleted`);
   } catch (err) {
     return next(err);
   }

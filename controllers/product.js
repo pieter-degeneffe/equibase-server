@@ -1,6 +1,7 @@
 const { cleanQuery } = require('./helpers.js');
 
 const Product = require('../models/stock/product.js');
+const { deleteItem } = require('../utils/mongoose');
 
 exports.getAllProducts = async (req, res, next) => {
   try {
@@ -61,11 +62,11 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-exports.deleteProduct = async (req, res) => {
+exports.deleteProduct = async (req, res, next) => {
   try {
-    await Product.findByIdAndDelete(req.params.id);
+    await deleteItem(Product, req.params.id);
     res.status(200).send(`The product was successfully deleted`);
   } catch (e) {
-    res.status(400).send(e);
+    next(e);
   }
 };
