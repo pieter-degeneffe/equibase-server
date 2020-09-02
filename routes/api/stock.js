@@ -12,6 +12,10 @@ const controller = require('../../controllers/stock.js');
  *      responses:
  *        "200":
  *          description: An array of StockProducts
+ *        400:
+ *          description: Bad Request
+ *        500:
+ *          description: Internal Server Error
  */
 router.get('/', controller.getAllStock);
 /**
@@ -21,15 +25,21 @@ router.get('/', controller.getAllStock);
  *      tags: [Stock]
  *      description: create a batch
  *      summary: Create a batch of a product
- *      parameters:
- *      - name: body
- *        in: body
- *        schema:
- *          $ref:
- *             "#/components/schemas/ProductBatch"
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: "#/components/schemas/ProductBatch"
  *      responses:
- *        "201":
- *          description: "successful operation"
+ *        201:
+ *          description: successful operation
+ *        400:
+ *          description: Bad Request
+ *        404:
+ *          description: Not Found
+ *        500:
+ *          description: Internal Server Error
  */
 router.post('/', controller.addBatch);
 /**
@@ -48,6 +58,12 @@ router.post('/', controller.addBatch);
  *      responses:
  *        "200":
  *          description: A stock object
+ *        400:
+ *          description: Bad Request
+ *        404:
+ *          description: Not Found
+ *        500:
+ *          description: Internal Server Error
  */
 router.get('/:id', controller.getStockById);
 // router.post('/batch', controller.batchCreateProducts);
@@ -67,6 +83,12 @@ router.get('/:id', controller.getStockById);
  *      responses:
  *        "200":
  *          description: The updated stock object
+ *        400:
+ *          description: Bad Request
+ *        404:
+ *          description: Not Found
+ *        500:
+ *          description: Internal Server Error
  */
 router.put('/:id', controller.updateStock);
 // router.delete('/:id', controller.deleteProduct);

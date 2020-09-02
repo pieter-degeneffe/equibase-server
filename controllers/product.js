@@ -10,7 +10,7 @@ exports.getAllProducts = async (req, res, next) => {
       Product.countDocuments(query)
     ]);
     res.status(200).json({
-      data,
+      products: data,
       total
     });
   } catch (err) {
