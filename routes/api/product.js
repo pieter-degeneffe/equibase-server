@@ -15,6 +15,17 @@ const productController = require('../../controllers/product.js');
 router.get('/', productController.getAllProducts);
 /**
  * @swagger
+ * /product/config:
+ *    get:
+ *      summary: Get config for products
+ *      tags: [Product]
+ *      responses:
+ *        "200":
+ *          description: A paginated list of all products
+ */
+router.get('/config', productController.getConfig);
+/**
+ * @swagger
  * /product:
  *    post:
  *      summary: Create a new product
