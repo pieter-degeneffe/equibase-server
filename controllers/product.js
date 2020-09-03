@@ -1,5 +1,5 @@
 const { cleanQuery } = require('./helpers.js');
-
+const { productTypes, taxes } = require('../consts');
 const Product = require('../models/stock/product.js');
 const { deleteItem } = require('../utils/mongoose');
 
@@ -13,6 +13,17 @@ exports.getAllProducts = async (req, res, next) => {
     res.status(200).json({
       products: data,
       total
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.getConfig = async (req, res, next) => {
+  try {
+    res.status(200).json({
+      types: productTypes,
+      tax: taxes,
     });
   } catch (err) {
     return next(err);

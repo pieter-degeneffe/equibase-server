@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
+const { productTypes, taxes } = require('../../consts');
 
 let productSchema = new Schema({
   name: {
@@ -11,7 +12,7 @@ let productSchema = new Schema({
   },
   type: {
     type: String,
-    enum: ['Materiaal', 'Geneesmiddel', 'Voedingssupplement', 'Ontsmettingsmiddel'],
+    enum: productTypes,
     required: true,
   },
   CNK: {
@@ -28,7 +29,7 @@ let productSchema = new Schema({
   },
   tax: {
     type: String,
-    enum: ['6%', '21',],
+    enum: taxes,
     required: true,
   },
   sellingPrice: {
