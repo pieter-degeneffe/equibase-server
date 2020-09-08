@@ -39,7 +39,7 @@ exports.getStockById = async (req, res, next) => {
     const data = await getStockForProduct(product);
 
     res.status(200).json({
-      data
+      ...data
     });
   } catch (err) {
     return next(err);
