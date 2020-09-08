@@ -65,7 +65,7 @@ router.post('/', controller.addBatch);
  *      tags: [Stock]
  *      parameters:
  *        - in: path
- *          name: id
+ *          name: productId
  *          schema:
  *            type: string
  *          required: true
