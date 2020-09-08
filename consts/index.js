@@ -26,5 +26,5 @@ const swaggerOptions = {
   apis: ['./routes/api/*.js']
 };
 const productTypes = ['Materiaal', 'Geneesmiddel', 'Voedingssupplement', 'Ontsmettingsmiddel'];
-const taxes = ['6%', '21'];
+const taxes = ['6%', '21%'];
 module.exports = {colors, swaggerOptions, productTypes, taxes};
