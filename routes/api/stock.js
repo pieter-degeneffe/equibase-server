@@ -90,7 +90,7 @@ router.get('/:id', controller.getStockById);
  *      tags: [Stock]
  *      parameters:
  *        - in: path
- *          name: id
+ *          name: productId
  *          schema:
  *            type: string
  *          required: true
