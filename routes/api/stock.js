@@ -20,6 +20,21 @@ const controller = require('../../controllers/stock.js');
 router.get('/', controller.getAllStock);
 /**
  * @swagger
+ * /stock/expired:
+ *    get:
+ *      tags: [Stock]
+ *      summary: Get all expired products
+ *      responses:
+ *        "200":
+ *          description: An array of expired StockProducts
+ *        400:
+ *          description: Bad Request
+ *        500:
+ *          description: Internal Server Error
+ */
+router.get('/expired', controller.getExpiredStock);
+/**
+ * @swagger
  * /stock:
  *    post:
  *      tags: [Stock]
@@ -71,7 +86,7 @@ router.get('/:id', controller.getStockById);
  * @swagger
  * /stock/{productId}:
  *    put:
- *      summary: Get the stock of a specific product
+ *      summary: Update the stock of a specific product
  *      tags: [Stock]
  *      parameters:
  *        - in: path
@@ -80,6 +95,17 @@ router.get('/:id', controller.getStockById);
  *            type: string
  *          required: true
  *          description: Id of the product
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                amount:
+ *                  type: number
+ *              required:
+ *               - amount
  *      responses:
  *        "200":
  *          description: The updated stock object
@@ -87,10 +113,11 @@ router.get('/:id', controller.getStockById);
  *          description: Bad Request
  *        404:
  *          description: Not Found
+ *        403:
+ *          description: Not enough in stock
  *        500:
  *          description: Internal Server Error
  */
 router.put('/:id', controller.updateStock);
-// router.delete('/:id', controller.deleteProduct);
 
 module.exports = router;

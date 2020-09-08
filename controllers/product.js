@@ -1,6 +1,8 @@
 const { cleanQuery } = require('./helpers.js');
 const { productTypes, taxes } = require('../consts');
-const Product = require('../models/stock/product.js');
+const Product = require('../models/stock/product');
+const ProductBatch = require('../models/stock/productBatch');
+const { getStockForProduct } = require('../utils/mongoose');
 const { deleteItem } = require('../utils/mongoose');
 
 exports.getAllProducts = async (req, res, next) => {
@@ -75,7 +77,11 @@ exports.updateProduct = async (req, res) => {
 
 exports.deleteProduct = async (req, res, next) => {
   try {
-    await deleteItem(Product, req.params.id);
+    const { id } = req.params;
+    const product = await deleteItem(Product, id);
+    const { batches } = await getStockForProduct(product);
+
+    await Promise.all(batches.map(({ _id }) => ProductBatch.findByIdAndDelete(_id)));
     res.status(200).send(`The product was successfully deleted`);
   } catch (e) {
     next(e);
