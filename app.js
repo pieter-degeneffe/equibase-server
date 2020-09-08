@@ -58,7 +58,10 @@ app.use('/api/stock', stock);
 app.use(express.static('public'));
 
 //Error handling middleware - must be the last among other middleware
-app.use((err, req, res, _) => res.status(err.statusCode||500).json(err));
+app.use((err, req, res, _) => {
+  console.log('Something went wrong: ', err);
+  return res.status(err.statusCode || 500).json(err);
+});
 
 // Start the server
 app.listen(PORT || 8081, () => {
