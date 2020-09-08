@@ -1,0 +1,78 @@
+###
+
+PUT http://localhost:8081/api/stock/5f5646314977cd4ed03c92b3
+Content-Type: application/json
+
+{"amount":4}
+
+###
+
+GET localhost:8081/api/product/config
+Accept: application/json
+
+> {%
+client.test("should return 200", function ()  {
+  client.assert(response.status === 200);
+});
+
+%}
+
+
+<> 2020-09-07T093553.200.json
+<> 2020-09-03T015415.200.json
+
+###
+GET localhost:8081/api/stock/expired
+Accept: application/json
+
+
+<> 2020-09-03T034924.200.json
+
+###
+GET localhost:8081/api/stock/expired
+Accept: application/json
+
+client.test("should return 200", function ()  {
+  client.assert(response.status === 200);
+});
+
+<> 2020-09-07T093922.500.json
+
+###
+DELETE localhost:8081/api/product/5f4766663e9d082e82afb0d7
+Content-Type: application/json
+
+<> 2020-09-07T024749.200.json
+
+
+###
+PUT localhost:8081/api/product/5f4766663e9d082e82afb0d7
+Content-Type: application/json
+
+{
+  "product": "5f4766663e9d082e82afb0d7",
+  "lotNumber": "987654321",
+  "expirationDate": "02/18/2021",
+  "buyInPrice": 10,
+  "initialAmount": 100,
+  "remainingAmount": 100,
+  "deliveryDate": "08/27/2020",
+  "supplier": "Medina"
+}
+
+###
+POST localhost:8081/api/product
+Content-Type: application/json
+
+{
+  "product": "5f4766663e9d082e82afb0d7",
+  "lotNumber": "987654321",
+  "expirationDate": "02/18/2021",
+  "buyInPrice": 10,
+  "initialAmount": 100,
+  "remainingAmount": 100,
+  "deliveryDate": "08/27/2020",
+  "supplier": "Medina"
+}
+
+###

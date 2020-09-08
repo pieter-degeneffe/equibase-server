@@ -1,6 +1,7 @@
 const ProductBatch = require('../models/stock/productBatch.js');
 const Product = require('../models/stock/product.js');
 const StockModification = require('../models/stock/stockModification.js');
+const { getItemById } = require('../utils/mongoose');
 const { getStockForProduct } = require('../utils/mongoose');
 const { cleanQuery } = require('./helpers.js');
 
@@ -35,7 +36,7 @@ exports.getExpiredStock = async (req, res, next) => {
 
 exports.getStockById = async (req, res, next) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await getItemById(Product, req.params.id);
     const data = await getStockForProduct(product);
 
     res.status(200).json({
@@ -80,9 +81,9 @@ exports.updateStock = async (req, res, next) => {
 
 exports.addBatch = async (req, res) => {
   try {
-    const batch = new ProductBatch({ ...req.body, remainingAmount: req.body.initialAmount });
     const productExists = await Product.exists({ _id: req.body.product });
     if (productExists) {
+      const batch = new ProductBatch({ ...req.body, remainingAmount: req.body.initialAmount });
       const stockModification = new StockModification({
         batch: batch._id,
         product: req.body.product,

@@ -10,6 +10,25 @@ exports.deleteItem = async (model, id) => {
   }
 };
 
+exports.getItemById = async (model, id) => {
+  const item = await model.findById(id);
+
+  if (item) {
+    return item;
+  } else {
+    throw { statusCode: 404, message: `${ id } not found`, status: 'Not Found' };
+  }
+};
+exports.getItem = async (model, query) => {
+  const item = await model.find(query);
+
+  if (item) {
+    return item;
+  } else {
+    throw { statusCode: 404, message: `${ query } nothing found`, status: 'Not Found' };
+  }
+};
+
 exports.getStockForProduct = async (product) => {
   const batches = await ProductBatch.find({ product: product._id });
   return {
