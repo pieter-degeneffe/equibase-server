@@ -59,8 +59,9 @@ app.use(express.static('public'));
 
 //Error handling middleware - must be the last among other middleware
 app.use((err, req, res, _) => {
-  console.error('Something went wrong: ', err);
-  return res.status(err.statusCode || 500).json(err);
+  const { statusCode } = err;
+  console.error(JSON.stringify({ severity: statusCode >= 500 ? 'error' : 'warning', ...err }));
+  return res.status(statusCode || 500).json(err);
 });
 
 // Start the server
