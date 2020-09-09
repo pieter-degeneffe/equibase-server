@@ -13,9 +13,9 @@ exports.getAllStock = async (req, res, next) => {
       Product.find(query).skip((limit * page) - limit).limit(limit).sort({ [sortBy]: sortDesc }).exec(),
       Product.countDocuments(query)
     ]);
-    const data = await Promise.all(products.map(getStockForProduct));
+    const stock = await Promise.all(products.map(getStockForProduct));
     res.status(200).json({
-      data,
+      stock,
       total
     });
   } catch (err) {
@@ -25,10 +25,14 @@ exports.getAllStock = async (req, res, next) => {
 
 exports.getExpiredStock = async (req, res, next) => {
   try {
-    const stock = await ProductBatch
+    const { limit, page, sortBy, sortDesc } = cleanQuery(req);
+    const stock = ProductBatch
       .aggregate()
       .match({ expirationDate: { '$lt': new Date() } })
-      .group({ _id: '$product', batches: { $push: '$$CURRENT' } });
+      .group({ _id: '$product', batches: { $push: '$$CURRENT' } })
+      .skip((limit * page) - limit)
+      .limit(limit)
+      .sort({ [sortBy]: sortDesc });
     res.status(200).json({ stock });
   } catch (err) {
     return next(err);
@@ -58,7 +62,11 @@ exports.updateStock = async (req, res, next) => {
     const totalRemaining = batches.reduce((prev, curr) => prev += curr.remainingAmount, 0);
 
     if (batches.length === 0) {
-      throw { statusCode: 404, message: `No valid batches found for this product: ${req.params.id}`, status: 'Not Found' };
+      throw {
+        statusCode: 404,
+        message: `No valid batches found for this product: ${ req.params.id }`,
+        status: 'Not Found'
+      };
     }
     let { amount } = req.body;
     if (totalRemaining < amount) {
@@ -80,7 +88,7 @@ exports.updateStock = async (req, res, next) => {
   }
 };
 
-exports.addBatch = async (req, res,next) => {
+exports.addBatch = async (req, res, next) => {
   try {
     const productExists = await Product.exists({ _id: req.body.product });
     if (productExists) {
@@ -100,6 +108,6 @@ exports.addBatch = async (req, res,next) => {
       throw { statusCode: 404, message: `Product with ID ${ req.body.product } does not exist`, status: 'Not Found' };
     }
   } catch (e) {
-    next({ statusCode:400, ...e });
+    next({ statusCode: 400, ...e });
   }
 };
