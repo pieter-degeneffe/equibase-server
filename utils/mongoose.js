@@ -28,9 +28,16 @@ exports.getItem = async (model, query) => {
     throw { statusCode: 404, message: `${ query } nothing found`, status: 'Not Found' };
   }
 };
+exports.updateItemById = async (model, id, item) => {
+  const newItem = model.findByIdAndUpdate(id, item, { new: true });
+  if (!newItem) {
+    throw { statusCode: 404, message: `${ id } not found`, status: 'Not Found' };
+  }
+  return item;
+};
 
 exports.getStockForProduct = async (product) => {
-  const batches = await ProductBatch.find({ product: product._id });
+  const batches = await this.getItem(ProductBatch, { product: product._id });
   return {
     ...product._doc,
     batches,

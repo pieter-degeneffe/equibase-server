@@ -1,3 +1,4 @@
+const { error } = require('../utils/logger');
 const ICSI = require('../models/icsi.js');
 const Embryo = require('../models/embryo.js');
 const { deleteItem } = require('../utils/mongoose');
@@ -50,14 +51,18 @@ exports.getAllICSI = async (req, res, next) => {
       .limit(limit)
       .sort({ [sortBy]: sortDesc })
       .exec((err, icsis) => {
-        if (err) res.status(404).send();
+        if (err) {
+          return next({ statusCode: 400, ...err });
+        }
         ICSI.countDocuments(query)
           .exec((err, total) => {
-            if (err) res.status(404).send();
+            if (err) {
+              return next({ statusCode: 400, ...err });
+            }
             if (sortBy && sortBy === 'amount') {
               icsis = icsis.sort(icsi => icsi.embryos.length * -sortDesc);
             }
-            res.status(200).json({
+            return res.status(200).json({
               icsis: icsis.filter(icsi => (!container || icsi.embryos[0].location.container._id == container) && (!tube || icsi.embryos[0].location.tube == tube)),
               total
             });
@@ -78,11 +83,15 @@ exports.getAllEmbryos = async (req, res, next) => {
       .limit(limit)
       .sort({ [sortBy]: sortDesc })
       .exec((err, embryos) => {
-        if (err) res.status(404).send();
+        if (err) {
+          return next({ statusCode: 400, ...err });
+        }
         Embryo.countDocuments(req.query)
           .exec((err, total) => {
-            if (err) res.status(404).send();
-            res.status(200).json({ embryos, total });
+            if (err) {
+              return next({ statusCode: 400, ...err });
+            }
+            return res.status(200).json({ embryos, total });
           });
       });
   } catch (err) {
@@ -95,7 +104,11 @@ exports.getICSI = async (req, res, next) => {
   try {
     await ICSI.findOne({ code: req.params.icsiId })
       .exec((err, icsi) => {
-        if (err) return next(err);
+        if (err) {
+          error({ origin: req.originalUrl, method: req.method, error: err });
+
+          return next(err);
+        }
         res.status(200).send(icsi);
       });
   } catch (err) {

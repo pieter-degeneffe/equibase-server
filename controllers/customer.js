@@ -1,16 +1,18 @@
+const { error } = require('../utils/logger');
 const Customer = require('../models/customer.js');
 const Horse = require('../models/horse.js');
 const Embryo = require('../models/embryo.js');
+const { getItem } = require('../utils/mongoose');
+const { updateItemById } = require('../utils/mongoose');
+const { getItemById } = require('../utils/mongoose');
 const { deleteItem } = require('../utils/mongoose');
 
 //Create a new customer
 exports.createCustomer = async (req, res, next) => {
   try {
-    let customer = new Customer(req.body.customer);
-    await customer.save((err) => {
-      if (err) return next(err);
-      res.status(201).send(customer);
-    });
+    const customer = new Customer(req.body.customer);
+    await customer.save();
+    res.status(201).send(customer);
   } catch (err) {
     return next(err);
   }
@@ -19,10 +21,8 @@ exports.createCustomer = async (req, res, next) => {
 //Get all Customers
 exports.getAllCustomers = async (req, res, next) => {
   try {
-    await Customer.find({}, (err, customers) => {
-      if (err) return next(err);
-      res.status(201).send(customers);
-    });
+    const customers = await Customer.find({});
+    res.status(200).send(customers);
   } catch (err) {
     return next(err);
   }
@@ -31,10 +31,8 @@ exports.getAllCustomers = async (req, res, next) => {
 //Get a customer
 exports.getCustomer = async (req, res, next) => {
   try {
-    await Customer.findById(req.params.customerId, (err, customer) => {
-      if (err) res.status(404).send();
-      res.status(200).send(customer);
-    });
+    const customer = await getItemById(Customer, req.params.customerId);
+    res.status(200).send(customer);
   } catch (err) {
     return next(err);
   }
@@ -43,10 +41,8 @@ exports.getCustomer = async (req, res, next) => {
 //Update a customer
 exports.updateCustomer = async (req, res, next) => {
   try {
-    const response = await Customer.findByIdAndUpdate(req.params.customerId, { $set: req.body.customer }, (err, customer) => {
-      if (err) return next(err);
-      res.status(201).send(customer);
-    });
+    const customer = await updateItemById(Customer, req.params.customerId, req.body.customer);
+    res.status(200).send(customer);
   } catch (err) {
     return next(err);
   }
@@ -56,7 +52,7 @@ exports.updateCustomer = async (req, res, next) => {
 exports.deleteCustomer = async (req, res, next) => {
   try {
     await deleteItem(Customer, req.params.customerId);
-    res.status(200).send(`The Customer was successfully deleted`);
+    res.status(204).send(`The Customer was successfully deleted`);
   } catch (err) {
     return next(err);
   }
@@ -83,7 +79,9 @@ exports.updateContact = async (req, res, next) => {
       contact.set(req.body.contact);
       customer.save().then(function (savedPost) {
         res.send(savedPost);
-      }).catch(function (err) {
+      }).catch((err) => {
+        error({ origin: req.originalUrl, method: req.method, error: err });
+
         res.status(500).send(err);
       });
     });
@@ -99,7 +97,7 @@ exports.deleteContact = async (req, res, next) => {
     if (customer) {
       res.status(200).send(`The contact was successfully removed`);
     } else {
-      res.status(404).send(`Customer with id ${ req.params.customerId } doesn't exist`);
+      throw { statusCode: 404, message: `Customer with id ${ req.params.customerId } doesn't exist`, status: 'Not Found' };
     }
   } catch (err) {
     return next(err);
@@ -110,7 +108,7 @@ exports.deleteContact = async (req, res, next) => {
 exports.getCustomerSearch = async (req, res, next) => {
   try {
     const response = await Customer.fuzzySearch(req.params.searchValue);
-    res.status(201).send(response);
+    res.status(200).send(response);
   } catch (err) {
     return next(err);
   }
@@ -119,17 +117,15 @@ exports.getCustomerSearch = async (req, res, next) => {
 //Get the horses of a customer
 exports.getHorsesOfCustomer = async (req, res, next) => {
   try {
-    const horsesByCustomer = await Horse.find({ owner: req.params.customerId }).exec(function (err, horses) {
-      if (err) return next(err);
-      res.status(200).send(horses);
-    });
+    const horsesByCustomer = await getItem(Horse, { owner: req.params.customerId });
+    res.status(200).send(horsesByCustomer);
   } catch (err) {
-    return next(err);
+    next(err);
   }
 };
 exports.getEmbryosOfCustomer = async (req, res, next) => {
   try {
-    const embryos = await Embryo.find({ ...req.query, owner: req.params.customerId }).exec();
+    const embryos = await getItem(Embryo,{ ...req.query, owner: req.params.customerId })
     return res.json({ embryos });
   } catch (e) {
     return next(e);
@@ -139,8 +135,8 @@ exports.getEmbryosOfCustomer = async (req, res, next) => {
 // exports.getCustomerCount = async (req, res, next) => {
 //   try {
 //     await Customer.countDocuments({}, (err, count) => {
-//       if (err) res.status(404).send();
-//       res.status(201).json(count);
+//       if (err) return next(err);
+//       res.status(200).json(count);
 //     });
 //   } catch(err) {
 //     return next(err);
@@ -152,7 +148,7 @@ exports.getEmbryosOfCustomer = async (req, res, next) => {
 //   try {
 //     const response = await Customer.findOneAndUpdate(req.params.customerId, (err, horse) => {
 //       if (err) return next(err);
-//       res.status(201).send(customer);
+//       res.status(200).send(customer);
 //     });
 //   } catch(err) {
 //     return next(err);
@@ -162,5 +158,5 @@ exports.getEmbryosOfCustomer = async (req, res, next) => {
 //Get countries
 // exports.getCountries = (req, res, next) => {
 //   const countries = Customer.schema.path('country').enumValues;
-//   res.status(201).send(countries);
+//   res.status(200).send(countries);
 // };

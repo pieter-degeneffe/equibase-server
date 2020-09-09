@@ -1,3 +1,4 @@
+const { error, warn } = require('../utils/logger');
 const ProductBatch = require('../models/stock/productBatch.js');
 const Product = require('../models/stock/product.js');
 const StockModification = require('../models/stock/stockModification.js');
@@ -57,11 +58,11 @@ exports.updateStock = async (req, res, next) => {
     const totalRemaining = batches.reduce((prev, curr) => prev += curr.remainingAmount, 0);
 
     if (batches.length === 0) {
-      return res.status(404).send('No valid batches found for this product');
+      throw { statusCode: 404, message: `No valid batches found for this product: ${req.params.id}`, status: 'Not Found' };
     }
     let { amount } = req.body;
     if (totalRemaining < amount) {
-      return res.status(403).send('Not enough in stock');
+      throw { statusCode: 403, message: 'Not enough in stock', status: 'Not Found' };
     }
 
     let counter = 0;
@@ -79,7 +80,7 @@ exports.updateStock = async (req, res, next) => {
   }
 };
 
-exports.addBatch = async (req, res) => {
+exports.addBatch = async (req, res,next) => {
   try {
     const productExists = await Product.exists({ _id: req.body.product });
     if (productExists) {
@@ -96,9 +97,9 @@ exports.addBatch = async (req, res) => {
       ]);
       return res.status(201).send(batch);
     } else {
-      return res.status(404).send({ errors: { notFound: `Product with ID ${ req.body.product } does not exist` } });
+      throw { statusCode: 404, message: `Product with ID ${ req.body.product } does not exist`, status: 'Not Found' };
     }
   } catch (e) {
-    res.status(400).send(e);
+    next({ statusCode:400, ...e });
   }
 };

@@ -1,6 +1,7 @@
 'use strict';
 
 // import dependencies
+const { error } = require('./utils/logger');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -59,9 +60,9 @@ app.use(express.static('public'));
 
 //Error handling middleware - must be the last among other middleware
 app.use((err, req, res, _) => {
-  const { statusCode } = err;
-  console.error(JSON.stringify({ severity: statusCode >= 500 ? 'error' : 'warning', ...err }));
-  return res.status(statusCode || 500).json(err);
+  err.statusCode = err.statusCode || 500;
+  error(err);
+  return res.status(err.statusCode).json(err);
 });
 
 // Start the server

@@ -1,6 +1,8 @@
+const { error } = require('../utils/logger');
 const Horse = require('../models/horse.js');
 const Embryo = require('../models/embryo.js');
 var fs = require('fs');
+const { getItem } = require('../utils/mongoose');
 const { deleteItem } = require('../utils/mongoose');
 const { cleanQuery } = require('./helpers');
 
@@ -37,10 +39,14 @@ exports.getAllHorses = async (req, res, next) => {
       .limit(limit)
       .sort({ [sortBy]: sortDesc })
       .exec((err, horses) => {
-        if (err) res.status(404).send();
+        if (err) {
+          throw { statusCode: 404, message: `${ query } nothing found`, status: 'Not Found' };
+        }
         Horse.countDocuments(req.query)
           .exec((err, total) => {
-            if (err) res.status(404).send();
+            if (err) {
+              return next(err);
+            }
             res.status(200).json({ horses, total });
           });
       });
@@ -74,7 +80,7 @@ exports.getHorse = async (req, res, next) => {
 };
 exports.getEmbryosOfHorse = async (req, res, next) => {
   try {
-    const embryos = await Embryo.find({ ...req.query, surrogate: req.params.horseId }).exec();
+    const embryos = await getItem(Embryo,{ ...req.query, surrogate: req.params.horseId });
     return res.json({ embryos });
   } catch (e) {
     return next(e);
@@ -90,7 +96,7 @@ exports.updateHorse = async (req, res, next) => {
       .populate('location')
       .exec((err, horse) => {
         if (err) return next(err);
-        res.status(201).send(horse);
+        res.status(200).send(horse);
       });
   } catch (err) {
     return next(err);
@@ -112,7 +118,9 @@ exports.createPassport = async (req, res, next) => {
   let file = req.files.file;
   let filename = 'files/horse/passport/' + req.params.horseId + '.pdf';
   file.mv('public/' + filename, function (err) {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      return next(err);
+    }
     Horse.findByIdAndUpdate(req.params.horseId, { $set: { passport: filename } }, { new: true }, (err, horse) => {
       if (err) return next(err);
       res.status(201).send(horse);
@@ -126,7 +134,7 @@ exports.deletePassport = (req, res, next) => {
   fs.unlink(filename, function () {
     Horse.findByIdAndUpdate(req.params.horseId, { $unset: { passport: 1 } }, { new: true }, (err, horse) => {
       if (err) return next(err);
-      res.status(201).send(horse);
+      res.status(200).send(horse);
     });
   });
 };
@@ -159,7 +167,7 @@ exports.deleteLodging = async (req, res, next) => {
 // exports.getHorseCount = async (req, res, next) => {
 //   try {
 //     await Horse.countDocuments({}, (err, count) => {
-//       if (err) res.status(404).send();
+//       if (err) return next(err);
 //       res.status(200).json(count);
 //     });
 //   } catch(err) {
