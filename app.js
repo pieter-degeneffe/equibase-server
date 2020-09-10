@@ -55,6 +55,8 @@ const product = require('./routes/api/product');
 app.use('/api/product', product);
 const stock = require('./routes/api/stock');
 app.use('/api/stock', stock);
+const config = require('./routes/api/config');
+app.use('/api/config', config);
 
 app.use(express.static('public'));
 

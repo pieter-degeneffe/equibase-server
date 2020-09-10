@@ -35,6 +35,68 @@ router.get('/', controller.getAllStock);
 router.get('/expired', controller.getExpiredStock);
 /**
  * @swagger
+ * /stock/{productId}:
+ *    get:
+ *      summary: Get deliveries over timespan
+ *      tags: [Stock]
+ *      parameters:
+ *        - in: query
+ *          name: from
+ *          schema:
+ *            type: string
+ *          required: true
+ *        - in: query
+ *          name: to
+ *          schema:
+ *            type: string
+ *          required: false
+ *      responses:
+ *        200:
+ *          description: A stock object
+ *        400:
+ *          description: Bad Request
+ *        404:
+ *          description: Not Found
+ *        500:
+ *          description: Internal Server Error
+ */
+router.get('/deliveries', controller.getDeliveries);
+/**
+ * @swagger
+ * /stock/mods:
+ *    get:
+ *      summary: Get all stock modifications
+ *      tags: [Stock]
+ *      parameters:
+ *        - in: query
+ *          name: out
+ *          schema:
+ *            type: boolean
+ *          required: false
+ *          description: get only outgoing stock modifications
+ *        - in: query
+ *          name: from
+ *          schema:
+ *            type: string
+ *          required: true
+ *        - in: query
+ *          name: to
+ *          schema:
+ *            type: string
+ *          required: false
+ *      responses:
+ *        "200":
+ *          description: A list of stock-modifications
+ *        400:
+ *          description: Bad Request
+ *        404:
+ *          description: Not Found
+ *        500:
+ *          description: Internal Server Error
+ */
+router.get('/mods', controller.getStockMod);
+/**
+ * @swagger
  * /stock:
  *    post:
  *      tags: [Stock]
@@ -81,8 +143,37 @@ router.post('/', controller.addBatch);
  *          description: Internal Server Error
  */
 router.get('/:id', controller.getStockById);
-// router.post('/batch', controller.batchCreateProducts);
 /**
+ * @swagger
+ * /stock/{productId}/mods:
+ *    get:
+ *      summary: Get the stock modifications of a specific product
+ *      tags: [Stock]
+ *      parameters:
+ *        - in: path
+ *          name: productId
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: Id of the product
+ *        - in: query
+ *          name: out
+ *          schema:
+ *            type: boolean
+ *          required: false
+ *          description: get only outgoing stock modifications
+ *      responses:
+ *        "200":
+ *          description: A list of stock-modifications
+ *        400:
+ *          description: Bad Request
+ *        404:
+ *          description: Not Found
+ *        500:
+ *          description: Internal Server Error
+ */
+router.get('/:id/mods', controller.getStockModById);
+ /**
  * @swagger
  * /stock/{productId}:
  *    put:
@@ -104,8 +195,22 @@ router.get('/:id', controller.getStockById);
  *              properties:
  *                amount:
  *                  type: number
+ *                type:
+ *                  type: string
+ *                  enum:
+ *                    - Beschadigd
+ *                    - Controle
+ *                    - Toediening
+ *                    - Verkoop
+ *                client:
+ *                  type: string
+ *                  description: id of the client required when type === Verkoop
+ *                horse:
+ *                  type: string
+ *                  description: id of the horse required when type === Toediening
  *              required:
  *               - amount
+ *               - type
  *      responses:
  *        "200":
  *          description: The updated stock object

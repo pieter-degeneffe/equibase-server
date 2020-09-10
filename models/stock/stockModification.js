@@ -1,36 +1,52 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-
+const { modificationTypes } = require('../../consts');
+const { Schema, model } = require('mongoose');
+const { ObjectId } = Schema.Types;
 const stockModificationSchema = new Schema({
   type: {
     type: String,
-    enum: ['Aankoop','Export','Controle'],
+    enum: Object.values(modificationTypes),
     required: [true, 'Type is a required field'],
     immutable: true
   },
-  product : {
-    type: mongoose.Schema.Types.ObjectId,
+  product: {
+    type: ObjectId,
     ref: 'Product',
-    required:true,
+    required: true,
   },
   batch: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref:'ProductBatch',
-    required:true
+    type: ObjectId,
+    ref: 'ProductBatch',
+    required: true
+  },
+  client: {
+    type: ObjectId,
+    ref: 'Customer',
+    required: function () {
+      return this.type === modificationTypes.SEL;
+    }
+  },
+  horse: {
+    type: ObjectId,
+    ref: 'Horse',
+    required: function () {
+      return this.type === modificationTypes.ADMINISTRATION;
+    }
   },
   amount: {
     type: Number,
     required: [true, 'Amount is a required field']
   },
-}, {timestamps: true});
+}, { timestamps: true });
 
 const autoPopulate = function (next) {
   this.populate('product');
   this.populate('batch');
+  this.populate('client');
+  this.populate('horse');
   next();
 };
 
 stockModificationSchema.pre('find', autoPopulate);
 stockModificationSchema.pre('findOne', autoPopulate);
 stockModificationSchema.pre('findByIdAndUpdate', autoPopulate);
-module.exports = mongoose.model('StockModification', stockModificationSchema, '');
+module.exports = model('StockModification', stockModificationSchema, '');

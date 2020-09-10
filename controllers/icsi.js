@@ -2,7 +2,7 @@ const { error } = require('../utils/logger');
 const ICSI = require('../models/icsi.js');
 const Embryo = require('../models/embryo.js');
 const { deleteItem } = require('../utils/mongoose');
-const { cleanQuery } = require('./helpers.js');
+const { cleanQuery } = require('../utils/helpers.js');
 
 //Create a new ICSI
 exports.createICSI = async (req, res, next) => {

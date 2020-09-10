@@ -1,10 +1,12 @@
-const { error, warn } = require('../utils/logger');
 const ProductBatch = require('../models/stock/productBatch.js');
 const Product = require('../models/stock/product.js');
 const StockModification = require('../models/stock/stockModification.js');
-const { getItemById } = require('../utils/mongoose');
-const { getStockForProduct } = require('../utils/mongoose');
-const { cleanQuery } = require('./helpers.js');
+const Customer = require('../models/customer.js');
+const Horse = require('../models/horse.js');
+const { modificationTypes } = require('../consts');
+const { getItem, getItemById, getStockForProduct } = require('../utils/mongoose');
+const { cleanQuery } = require('../utils/helpers.js');
+const { ObjectId } = require('mongoose').Types;
 
 exports.getAllStock = async (req, res, next) => {
   try {
@@ -54,8 +56,36 @@ exports.getStockById = async (req, res, next) => {
 
 exports.updateStock = async (req, res, next) => {
   try {
+    let { amount, type, client, horse } = req.body;
+    const { id: product } = req.params;
+    const missingProperties = [];
+    const clientValid = ObjectId.isValid(client);
+    const horseValid = ObjectId.isValid(horse);
+    const [horseExists, clientExists] = await Promise.all([
+      horseValid ? Horse.exists({ _id: horse }) : '',
+      clientValid ? Customer.exists({ _id: client }) : ''
+    ]);
+    if (!amount) {
+      missingProperties.push('amount');
+    }
+    if (!type) {
+      missingProperties.push('type');
+    }
+    if (type === modificationTypes.SEL && !clientExists) {
+      missingProperties.push('client');
+    }
+    if (type === modificationTypes.ADMINISTRATION && !horseExists) {
+      missingProperties.push('horse');
+    }
+    if (missingProperties.length > 0) {
+      return next({
+        statusCode: 400,
+        message: `Missing ${ missingProperties.length === 1 ? 'property' : 'properties' }: ${ missingProperties.join(', ') }`
+      });
+    }
+
     const batches = await ProductBatch.find({
-      product: req.params.id,
+      product,
       expirationDate: { $gt: new Date() },
       remainingAmount: { $gt: 0 }
     }).sort({ expirationDate: 1 });
@@ -68,21 +98,31 @@ exports.updateStock = async (req, res, next) => {
         status: 'Not Found'
       };
     }
-    let { amount } = req.body;
     if (totalRemaining < amount) {
       throw { statusCode: 403, message: 'Not enough in stock', status: 'Not Found' };
     }
 
-    let counter = 0;
+    let index = 0;
     while (amount > 0) {
-      const { _id, remainingAmount } = batches[counter];
-      await ProductBatch.findByIdAndUpdate(_id, { remainingAmount: remainingAmount > amount ? remainingAmount - amount : 0 });
+      const { _id: batch, remainingAmount } = batches[index];
+      const newRemaining = remainingAmount > amount ? remainingAmount - amount : 0;
+      const mod = new StockModification({
+        type,
+        client,
+        horse,
+        product,
+        batch,
+        amount: newRemaining === 0 ? remainingAmount : amount,
+      });
+      await mod.validate();
+      await Promise.all([
+        ProductBatch.findByIdAndUpdate(batch, { remainingAmount: newRemaining }),
+        mod.save()
+      ]);
       amount = amount - remainingAmount;
-      counter++;
+      index++;
     }
-    res.status(200).json({
-      data: batches
-    });
+    res.send(204);
   } catch (err) {
     return next(err);
   }
@@ -109,5 +149,48 @@ exports.addBatch = async (req, res, next) => {
     }
   } catch (e) {
     next({ statusCode: 400, ...e });
+  }
+};
+
+exports.getStockModById = async (req, res, next) => {
+  try {
+    const { out } = req.query;
+    const mods = await getItem(StockModification, {
+      product: req.params.id,
+      type: out ? { $not: modificationTypes.BUY } : undefined
+    });
+    res.status(200).json(mods);
+  } catch (e) {
+    next(e);
+  }
+};
+
+exports.getStockMod = async (req, res, next) => {
+  try {
+    const { from, to, out } = req.query;
+    const mods = await getItem(StockModification, out !== undefined ? {
+      type: { $ne: modificationTypes.BUY }, createdAt: {
+        $gte: new Date(from ? from : 0),
+        $lte: to ? new Date(to) : new Date()
+      }
+    } : {});
+    res.status(200).json(mods);
+  } catch (e) {
+    next(e);
+  }
+};
+
+exports.getDeliveries = async (req, res, next) => {
+  try {
+    const { from, to } = req.query;
+    const deliveries = await getItem(ProductBatch, {
+      deliveryDate: {
+        $gte: new Date(from),
+        $lte: to ? new Date(to) : new Date()
+      }
+    }, { sort: 'deliveryDate' });
+    res.json(deliveries);
+  } catch (e) {
+    next(e);
   }
 };

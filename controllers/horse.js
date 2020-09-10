@@ -4,7 +4,7 @@ const Embryo = require('../models/embryo.js');
 var fs = require('fs');
 const { getItem } = require('../utils/mongoose');
 const { deleteItem } = require('../utils/mongoose');
-const { cleanQuery } = require('./helpers');
+const { cleanQuery } = require('../utils/helpers');
 
 //Create a new horse
 exports.createHorse = async (req, res, next) => {

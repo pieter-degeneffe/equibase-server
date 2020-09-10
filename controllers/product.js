@@ -1,4 +1,4 @@
-const { cleanQuery } = require('./helpers.js');
+const { cleanQuery } = require('../utils/helpers.js');
 const { productTypes, taxes } = require('../consts');
 const Product = require('../models/stock/product');
 const ProductBatch = require('../models/stock/productBatch');
@@ -15,17 +15,6 @@ exports.getAllProducts = async (req, res, next) => {
     res.status(200).json({
       products: data,
       total
-    });
-  } catch (err) {
-    next(err);
-  }
-};
-
-exports.getConfig = async (req, res, next) => {
-  try {
-    res.status(200).json({
-      types: productTypes,
-      tax: taxes,
     });
   } catch (err) {
     next(err);

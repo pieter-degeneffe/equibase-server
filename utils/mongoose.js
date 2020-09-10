@@ -19,8 +19,8 @@ exports.getItemById = async (model, id) => {
     throw { statusCode: 404, message: `${ id } not found`, status: 'Not Found' };
   }
 };
-exports.getItem = async (model, query) => {
-  const item = await model.find(query);
+exports.getItem = async (model, query, options) => {
+  const item = await model.find(query, null, options);
 
   if (item) {
     return item;
