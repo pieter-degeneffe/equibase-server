@@ -29,7 +29,7 @@ exports.getItem = async (model, query, options) => {
   }
 };
 exports.updateItemById = async (model, id, item) => {
-  const newItem = model.findByIdAndUpdate(id, item, { new: true });
+  const newItem = await model.findByIdAndUpdate(id, item, { new: true });
   if (!newItem) {
     throw { statusCode: 404, message: `${ id } not found`, status: 'Not Found' };
   }
