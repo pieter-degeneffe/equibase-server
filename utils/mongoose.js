@@ -42,6 +42,6 @@ exports.getStockForProduct = async (product) => {
     ...product.toObject(),
     batches,
     remaining: batches.reduce((total, cur) => cur.active ? total + cur.remainingAmount : total, 0),
-    value: batches.reduce((total, cur) => cur.active ? total + cur.remainingAmount * cur.sellingPricePerUnit: total, 0),
+    value: batches.reduce((total, cur) => cur.active ? total + cur.sellingPrice : total, 0),
   };
 };

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const batchSchema = new Schema({
-  product : {
+  product: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product'
   },
@@ -37,7 +37,7 @@ const batchSchema = new Schema({
     type: Number,
     required: [true, 'Amount is a required field']
   },
-  deliveryDate:{
+  deliveryDate: {
     type: Date,
     required: true,
   },
@@ -48,11 +48,15 @@ const batchSchema = new Schema({
   },
   active: {
     type: Boolean,
-    default:true,
+    default: true,
   }
-}, {timestamps: true});
+}, { timestamps: true });
 
-batchSchema.virtual('sellingPrice').get(function() {return this.sellingPricePerUnit * this.remainingAmount});
+batchSchema.virtual('sellingPrice').get(function () {
+  return this.sellingPricePerUnit * this.remainingAmount;
+});
+
+batchSchema.set('toJSON', { getters: true, virtuals: true });
 
 const autoPopulate = function (next) {
   this.populate('product');
