@@ -33,11 +33,6 @@ const batchSchema = new Schema({
     type: Number,
     maxlength: [64, 'Max length is 64 characters'],
   },
-  supplementAdministration: {
-    required: true,
-    type: Number,
-    maxlength: [64, 'Max length is 64 characters'],
-  },
   remainingAmount: {
     type: Number,
     required: [true, 'Amount is a required field']

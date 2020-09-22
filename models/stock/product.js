@@ -27,6 +27,11 @@ let productSchema = new Schema({
     required: true,
     maxlength: [64, 'Max length is 64 characters'],
   },
+  supplementAdministration: {
+    required: true,
+    type: Number,
+    maxlength: [64, 'Max length is 64 characters'],
+  },
   tax: {
     type: String,
     enum: taxes,
