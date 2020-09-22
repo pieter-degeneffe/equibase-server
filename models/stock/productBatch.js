@@ -25,6 +25,17 @@ const batchSchema = new Schema({
   },
   initialAmount: {
     type: Number,
+    min: 1,
+    maxlength: [64, 'Max length is 64 characters'],
+  },
+  sellingPricePerUnit: {
+    required: true,
+    type: Number,
+    maxlength: [64, 'Max length is 64 characters'],
+  },
+  supplementAdministration: {
+    required: true,
+    type: Number,
     maxlength: [64, 'Max length is 64 characters'],
   },
   remainingAmount: {
@@ -40,7 +51,13 @@ const batchSchema = new Schema({
     trim: true,
     maxlength: [64, 'Max length is 64 characters'],
   },
+  active: {
+    type: Boolean,
+    default:true,
+  }
 }, {timestamps: true});
+
+batchSchema.virtual('sellingPrice').get(function() {return this.sellingPricePerUnit * this.remainingAmount});
 
 const autoPopulate = function (next) {
   this.populate('product');

@@ -39,8 +39,9 @@ exports.updateItemById = async (model, id, item) => {
 exports.getStockForProduct = async (product) => {
   const batches = await this.getItem(ProductBatch, { product: product._id });
   return {
-    ...product._doc,
+    ...product.toObject(),
     batches,
-    remaining: batches.reduce((total, cur) => total + cur.remainingAmount, 0)
+    remaining: batches.reduce((total, cur) => cur.active ? total + cur.remainingAmount : total, 0),
+    value: batches.reduce((total, cur) => cur.active ? total + cur.remainingAmount * cur.sellingPricePerUnit: total, 0),
   };
 };
