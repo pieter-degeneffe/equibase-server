@@ -16,6 +16,7 @@ router.post('/:horseId/lodging', horseController.createLodging);
 router.delete('/:horseId/lodging/:lodgingId', horseController.deleteLodging);
 
 router.get('/:horseId/embryos', horseController.getEmbryosOfHorse);
+router.get('/:horseId/medication', horseController.getStockModsByHorse);
 
 //router.get('/count', horseController.getHorseCount);
 

@@ -1,6 +1,6 @@
-const { error } = require('../utils/logger');
 const Horse = require('../models/horse.js');
 const Embryo = require('../models/embryo.js');
+const StockModification = require('../models/stock/stockModification.js');
 var fs = require('fs');
 const { getItem } = require('../utils/mongoose');
 const { deleteItem } = require('../utils/mongoose');
@@ -78,9 +78,28 @@ exports.getHorse = async (req, res, next) => {
     return next(err);
   }
 };
-exports.getEmbryosOfHorse = async (req, res, next) => {
+exports.getStockModsByHorse = async (req, res, next) => {
   try {
-    const embryos = await getItem(Embryo,{ ...req.query, surrogate: req.params.horseId });
+    const { page, limit, sortBy, query, sortDesc } = cleanQuery(req);
+    const mods = await getItem(StockModification, { ...query, horse: req.params.horseId }, {
+      limit,
+      skip: page * limit,
+      sort: { [sortBy]: sortDesc },
+    });
+    return res.json({ mods });
+  } catch (e) {
+    return next(e);
+  }
+};
+
+exports.getEmbryosOfHorse = async (req, res, next) => {
+  const { page, limit, sortBy, query, sortDesc } = cleanQuery(req);
+  try {
+    const embryos = await getItem(Embryo, { ...query, surrogate: req.params.horseId }, {
+      limit,
+      skip: page * limit,
+      sort: { [sortBy]: sortDesc },
+    });
     return res.json({ embryos });
   } catch (e) {
     return next(e);
@@ -116,7 +135,7 @@ exports.deleteHorse = async (req, res, next) => {
 //Create a new horse passport
 exports.createPassport = async (req, res, next) => {
   let file = req.files.file;
-  let filename = 'files/horse/passport/' + req.params.horseId + '.pdf';
+  let filename = `files/horse/passport/${ req.params.horseId }.pdf`;
   file.mv('public/' + filename, function (err) {
     if (err) {
       return next(err);
@@ -130,7 +149,7 @@ exports.createPassport = async (req, res, next) => {
 
 //Delete a horse passport
 exports.deletePassport = (req, res, next) => {
-  let filename = 'public/files/horse/passport/' + req.params.horseId + '.pdf';
+  let filename = `public/files/horse/passport/${ req.params.horseId }.pdf`;
   fs.unlink(filename, function () {
     Horse.findByIdAndUpdate(req.params.horseId, { $unset: { passport: 1 } }, { new: true }, (err, horse) => {
       if (err) return next(err);
