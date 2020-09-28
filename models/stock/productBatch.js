@@ -59,7 +59,7 @@ batchSchema.virtual('sellingPrice').get(function () {
 batchSchema.set('toJSON', { getters: true, virtuals: true });
 
 const autoPopulate = function (next) {
-  this.populate('product');
+  // this.populate('product');
   next();
 };
 

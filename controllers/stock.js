@@ -11,14 +11,14 @@ const { ObjectId } = require('mongoose').Types;
 exports.getAllStock = async (req, res, next) => {
   try {
     const { limit, page, sortBy, sortDesc, query } = cleanQuery(req);
-    console.log('Arne: query= ', query);
+
     const [products, total] = await Promise.all([
       Product.find(query).skip((limit * page) - limit).limit(limit).sort({ [sortBy]: sortDesc }),
       Product.countDocuments(query)
     ]);
-    // const stock = await Promise.all(products.map(getStockForProduct));
+    const stock = await Promise.all(products.map(getStockForProduct));
     res.status(200).json({
-      products,
+      products: stock,
       total
     });
   } catch (err) {
@@ -47,7 +47,7 @@ exports.getStockById = async (req, res, next) => {
     const { limit, page, sortBy, sortDesc, query } = cleanQuery(req);
     const [batches, total] = await Promise.all([
       ProductBatch.find({ product: req.params.id }).skip((limit * page) - limit).limit(limit).sort({ [sortBy]: sortDesc }),
-      ProductBatch.countDocuments({product:req.params.id}),
+      ProductBatch.countDocuments({ product: req.params.id }),
     ]);
 
     res.status(200).json({
