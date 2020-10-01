@@ -157,8 +157,8 @@ router.get('/:id', controller.getStockById);
  *          required: true
  *          description: Id of the batch
  *      responses:
- *        "205":
- *          description: Succes Reset Content
+ *        "200":
+ *          description: Succes BatchObject
  *        400:
  *          description: Bad Request
  *        404:
@@ -181,8 +181,8 @@ router.put('/:id/deactivate', controller.setStockInactive);
  *          required: true
  *          description: Id of the batch
  *      responses:
- *        "205":
- *          description: Succes Reset Content
+ *        "200":
+ *          description: Succes BatchObject
  *        400:
  *          description: Bad Request
  *        404:

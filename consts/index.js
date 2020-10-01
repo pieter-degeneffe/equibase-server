@@ -27,7 +27,9 @@ exports.modificationTypes = {
   CHECK: 'Controle',
   ADMINISTRATION: 'Toediening',
   DAMAGED: 'Beschadigd',
+  ACTIVATED: 'geactiveerd',
+  DEACTIVATED: 'gedeactiveerd',
 };
 exports.productTypes = ['Materiaal', 'Geneesmiddel', 'Voedingssupplement', 'Ontsmettingsmiddel'];
 exports.taxes = ['6%', '21%'];
-exports.productUnits = ['Tabletten', 'ml', 'mg','g', 'l', 'kg', 'stuks'];
+exports.productUnits = ['Tabletten', 'ml', 'mg', 'g', 'l', 'kg', 'stuks'];

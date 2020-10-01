@@ -13,10 +13,9 @@ exports.getProductConfig = async (req, res, next) => {
 };
 
 exports.getStockModConfig = async (req, res, next) => {
-  const {BUY, ...types} = modificationTypes;
   try {
     res.status(200).json({
-      types: Object.values(types),
+      types: Object.values(modificationTypes),
     });
   } catch (err) {
     next(err);

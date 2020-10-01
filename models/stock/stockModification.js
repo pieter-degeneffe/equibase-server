@@ -4,7 +4,7 @@ const { ObjectId } = Schema.Types;
 const stockModificationSchema = new Schema({
   type: {
     type: String,
-    enum: Object.values(modificationTypes),
+    enum: [...Object.values(modificationTypes)],
     required: [true, 'Type is a required field'],
     immutable: true
   },
