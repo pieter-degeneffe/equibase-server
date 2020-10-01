@@ -145,6 +145,54 @@ router.post('/', controller.addBatch);
 router.get('/:id', controller.getStockById);
 /**
  * @swagger
+ * /stock/{id}/deactivate:
+ *    put:
+ *      summary: Set a product batch inactive
+ *      tags: [Stock]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: Id of the batch
+ *      responses:
+ *        "205":
+ *          description: Succes Reset Content
+ *        400:
+ *          description: Bad Request
+ *        404:
+ *          description: Not Found
+ *        500:
+ *          description: Internal Server Error
+ */
+router.put('/:id/deactivate', controller.setStockInactive);
+/**
+ * @swagger
+ * /stock/{id}/activate:
+ *    put:
+ *      summary: Set a product batch active
+ *      tags: [Stock]
+ *      parameters:
+ *        - in: path
+ *          name: id
+ *          schema:
+ *            type: string
+ *          required: true
+ *          description: Id of the batch
+ *      responses:
+ *        "205":
+ *          description: Succes Reset Content
+ *        400:
+ *          description: Bad Request
+ *        404:
+ *          description: Not Found
+ *        500:
+ *          description: Internal Server Error
+ */
+router.put('/:id/activate', controller.setStockActive);
+/**
+ * @swagger
  * /stock/{productId}/mods:
  *    get:
  *      summary: Get the stock modifications of a specific product

@@ -3,6 +3,7 @@ const Product = require('../models/stock/product.js');
 const StockModification = require('../models/stock/stockModification.js');
 const Customer = require('../models/customer.js');
 const Horse = require('../models/horse.js');
+const { updateItemById } = require('../utils/mongoose');
 const { modificationTypes } = require('../consts');
 const { getItem, getStockForProduct } = require('../utils/mongoose');
 const { cleanQuery } = require('../utils/helpers.js');
@@ -59,6 +60,22 @@ exports.getStockById = async (req, res, next) => {
   }
 };
 
+exports.setStockInactive = async (req, res, next) => {
+  try {
+    await updateItemById(ProductBatch, req.params.id, { active: false });
+    return res.sendStatus(205);
+  } catch (err) {
+    next(err);
+  }
+};
+exports.setStockActive = async (req, res, next) => {
+  try {
+    await updateItemById(ProductBatch, req.params.id, { active: true });
+    return res.sendStatus(205);
+  } catch (err) {
+    next(err);
+  }
+};
 exports.updateStock = async (req, res, next) => {
   try {
     let { amount, type, client, horse } = req.body;
