@@ -4,7 +4,7 @@ const StockModification = require('../models/stock/stockModification.js');
 const Customer = require('../models/customer.js');
 const Horse = require('../models/horse.js');
 const { modificationTypes } = require('../consts');
-const { getItem, getItemById, getStockForProduct } = require('../utils/mongoose');
+const { getItem, getStockForProduct } = require('../utils/mongoose');
 const { cleanQuery } = require('../utils/helpers.js');
 const { ObjectId } = require('mongoose').Types;
 
