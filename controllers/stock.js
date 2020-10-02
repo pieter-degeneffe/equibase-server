@@ -185,7 +185,7 @@ exports.getStockModById = async (req, res, next) => {
     const query = out ? { product, type: { $not: {$regex: modificationTypes.BUY }} } : { product };
     const options = {
       limit,
-      skip: page * limit,
+      skip: page(limit * page) - limit,
       sort: { [sortBy]: sortDesc },
     };
     const [mods, total] = await Promise.all([getItem(StockModification, query, options), StockModification.countDocuments(query)]);
