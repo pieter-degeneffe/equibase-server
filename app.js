@@ -57,6 +57,8 @@ const stock = require('./routes/api/stock');
 app.use('/api/stock', stock);
 const config = require('./routes/api/config');
 app.use('/api/config', config);
+const delivery = require('./routes/api/delivery');
+app.use('/api/delivery', delivery);
 
 app.use(express.static('public'));
 

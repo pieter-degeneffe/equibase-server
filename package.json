@@ -12,6 +12,7 @@
   "author": "Pieter-degeneffe <pieterdegeneffe@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.20.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -24,7 +25,8 @@
     "mongoose-to-swagger": "^1.0.3",
     "morgan": "^1.10.0",
     "swagger-jsdoc": "^4.0.0",
-    "swagger-ui-express": "^4.1.4"
+    "swagger-ui-express": "^4.1.4",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "nodemon": "^1.19.4"

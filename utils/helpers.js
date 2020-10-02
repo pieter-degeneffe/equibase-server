@@ -1,6 +1,7 @@
 const StockModification = require('../models/stock/stockModification.js');
 const ProductBatch = require('../models/stock/productBatch.js');
 const { modificationTypes } = require('../consts');
+const parseString = require('xml2js').parseString;
 
 const { updateItemById } = require('./mongoose');
 const { getItemById } = require('./mongoose');
@@ -24,6 +25,7 @@ exports.cleanQuery = (req) => {
   }
   return { limit, page, sortBy, sortDesc, query: req.query };
 };
+exports.xml2js = async (xml) => new Promise((resolve, reject) => parseString(xml, (err, result) => err ? reject(err) : resolve(result)));
 
 exports.updateStatus = async (id, newStatus) => {
   const originalBatch = await getItemById(ProductBatch, id);
