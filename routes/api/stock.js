@@ -221,9 +221,9 @@ router.put('/:id/activate', controller.setStockActive);
  *          description: Internal Server Error
  */
 router.get('/:id/mods', controller.getStockModById);
- /**
+/**
  * @swagger
- * /stock/{productId}:
+ * /stock/{productId}/{batchId}:
  *    put:
  *      summary: Update the stock of a specific product
  *      tags: [Stock]
@@ -233,6 +233,12 @@ router.get('/:id/mods', controller.getStockModById);
  *          schema:
  *            type: string
  *          required: true
+ *          description: Id of the product
+ *        - in: path
+ *          name: batchId
+ *          schema:
+ *            type: string
+ *          required: false
  *          description: Id of the product
  *      requestBody:
  *        required: true
@@ -260,8 +266,8 @@ router.get('/:id/mods', controller.getStockModById);
  *               - amount
  *               - type
  *      responses:
- *        "200":
- *          description: The updated stock object
+ *        "204":
+ *          description: Succes no content
  *        400:
  *          description: Bad Request
  *        404:
@@ -271,6 +277,5 @@ router.get('/:id/mods', controller.getStockModById);
  *        500:
  *          description: Internal Server Error
  */
-router.put('/:id', controller.updateStock);
-
+router.put('/:id/:batchId?', controller.updateStock);
 module.exports = router;

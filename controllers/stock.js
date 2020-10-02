@@ -83,7 +83,7 @@ exports.setStockActive = async (req, res, next) => {
 exports.updateStock = async (req, res, next) => {
   try {
     let { amount, type, client, horse } = req.body;
-    const { id: product } = req.params;
+    const { id: product, batchId } = req.params;
     const missingProperties = [];
     const clientValid = ObjectId.isValid(client);
     const horseValid = ObjectId.isValid(horse);
@@ -110,9 +110,9 @@ exports.updateStock = async (req, res, next) => {
       });
     }
 
-    const batches = await ProductBatch.find({
+    const batches = batchId ? [await getItemById(ProductBatch, batchId)] : await ProductBatch.find({
       product,
-      expirationDate: { $gt: new Date() },
+      active: true,
       remainingAmount: { $gt: 0 }
     }).sort({ expirationDate: 1 });
     const totalRemaining = batches.reduce((prev, curr) => prev += curr.remainingAmount, 0);
