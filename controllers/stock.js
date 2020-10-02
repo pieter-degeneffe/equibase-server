@@ -180,12 +180,16 @@ exports.addBatch = async (req, res, next) => {
 
 exports.getStockModById = async (req, res, next) => {
   try {
-    const { out } = req.query;
-    const mods = await getItem(StockModification, {
-      product: req.params.id,
-      type: out ? { $not: modificationTypes.BUY } : undefined
-    });
-    res.status(200).json(mods);
+    const { page, limit, sortBy, sortDesc } = cleanQuery(req);
+    const { query: { out }, params: { id: product } } = req;
+    const query = out ? { product, type: { $not: {$regex: modificationTypes.BUY }} } : { product };
+    const options = {
+      limit,
+      skip: page * limit,
+      sort: { [sortBy]: sortDesc },
+    };
+    const [mods, total] = await Promise.all([getItem(StockModification, query, options), StockModification.countDocuments(query)]);
+    res.status(200).json({ mods, total });
   } catch (e) {
     next(e);
   }
