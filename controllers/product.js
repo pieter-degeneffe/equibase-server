@@ -57,7 +57,7 @@ exports.deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
     const product = await deleteItem(Product, id);
-    const { batches } = await getStockForProduct(product);
+    const batches = await getItem(ProductBatch, { product: product._id });
 
     await Promise.all(batches.map(({ _id }) => deleteItem(ProductBatch, _id)));
     res.status(200).send(`The product was successfully deleted`);
