@@ -9,7 +9,7 @@ exports.cleanQuery = (req) => {
   let limit, page, sortBy, sortDesc;
   if (req.query.limit) {
     limit = parseInt(req.query.limit);
-    limit = limit>0 ? limit: undefined;
+    limit = limit > 0 ? limit : undefined;
     delete req.query.limit;
   }
   if (req.query.page) {
@@ -29,10 +29,10 @@ exports.cleanQuery = (req) => {
     skip: (limit * page) - limit,
     sort: { [sortBy]: sortDesc },
   };
-  return {options, limit, page, sortBy, sortDesc, query: req.query };
+  return { options, limit, page, sortBy, sortDesc, query: req.query };
 };
 exports.xml2js = async (xml) => new Promise((resolve, reject) => parseString(xml, (err, result) => err ? reject(err) : resolve(result)));
-
+exports.flatten = (list) => list.reduce((acc, val) => acc.concat(val), []);
 exports.updateStatus = async (id, newStatus) => {
   const originalBatch = await getItemById(ProductBatch, id);
   const updatedBatch = await updateItemById(ProductBatch, id, { ...originalBatch.toObject(), active: newStatus });
@@ -45,3 +45,7 @@ exports.updateStatus = async (id, newStatus) => {
   await mod.save();
   return updatedBatch;
 };
+exports.groupBy = (array, key) => array.reduce((rv, x) => {
+  (rv[x[key]] = rv[x[key]] || []).push(x);
+  return rv;
+}, {})
