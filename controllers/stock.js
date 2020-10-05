@@ -13,10 +13,10 @@ const { ObjectId } = require('mongoose').Types;
 
 exports.getAllStock = async (req, res, next) => {
   try {
-    const { limit, page, sortBy, sortDesc, query } = cleanQuery(req);
+    const { options, query } = cleanQuery(req);
 
     const [products, total] = await Promise.all([
-      Product.find(query).skip((limit * page) - limit).limit(limit).sort({ [sortBy]: sortDesc }),
+      getItem(Product, query, options),
       Product.countDocuments(query)
     ]);
     const stock = await Promise.all(products.map(getStockForProduct));
@@ -180,14 +180,9 @@ exports.addBatch = async (req, res, next) => {
 
 exports.getStockModById = async (req, res, next) => {
   try {
-    const { page, limit, sortBy, sortDesc } = cleanQuery(req);
+    const { options } = cleanQuery(req);
     const { query: { out }, params: { id: product } } = req;
-    const query = out ? { product, type: { $not: {$regex: modificationTypes.BUY }} } : { product };
-    const options = {
-      limit,
-      skip: (limit * page) - limit,
-      sort: { [sortBy]: sortDesc },
-    };
+    const query = out ? { product, type: { $not: { $regex: modificationTypes.BUY } } } : { product };
     const [mods, total] = await Promise.all([getItem(StockModification, query, options), StockModification.countDocuments(query)]);
     res.status(200).json({ mods, total });
   } catch (e) {
@@ -197,13 +192,14 @@ exports.getStockModById = async (req, res, next) => {
 
 exports.getStockMod = async (req, res, next) => {
   try {
-    const { from, to, out } = req.query;
+    const { options, query } = cleanQuery(req);
+    const { from, to, out } = query;
     const mods = await getItem(StockModification, out !== undefined ? {
       type: { $ne: modificationTypes.BUY }, createdAt: {
         $gte: new Date(from ? from : 0),
         $lte: to ? new Date(to) : new Date()
       }
-    } : {});
+    } : {}, options);
     res.status(200).json(mods);
   } catch (e) {
     next(e);
@@ -212,13 +208,14 @@ exports.getStockMod = async (req, res, next) => {
 
 exports.getDeliveries = async (req, res, next) => {
   try {
-    const { from, to } = req.query;
+    const { options, query } = cleanQuery(req);
+    const { from, to } = query;
     const deliveries = await getItem(ProductBatch, {
       deliveryDate: {
         $gte: new Date(from),
         $lte: to ? new Date(to) : new Date()
       }
-    }, { sort: 'deliveryDate' });
+    }, options);
     res.json(deliveries);
   } catch (e) {
     next(e);

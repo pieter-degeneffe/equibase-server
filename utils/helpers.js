@@ -9,6 +9,7 @@ exports.cleanQuery = (req) => {
   let limit, page, sortBy, sortDesc;
   if (req.query.limit) {
     limit = parseInt(req.query.limit);
+    limit = limit>0 ? limit: undefined;
     delete req.query.limit;
   }
   if (req.query.page) {
@@ -23,7 +24,12 @@ exports.cleanQuery = (req) => {
     sortDesc = req.query.sortDesc[0] === 'true' ? -1 : 1;
     delete req.query.sortDesc;
   }
-  return { limit, page, sortBy, sortDesc, query: req.query };
+  const options = {
+    limit,
+    skip: (limit * page) - limit,
+    sort: { [sortBy]: sortDesc },
+  };
+  return {options, limit, page, sortBy, sortDesc, query: req.query };
 };
 exports.xml2js = async (xml) => new Promise((resolve, reject) => parseString(xml, (err, result) => err ? reject(err) : resolve(result)));
 

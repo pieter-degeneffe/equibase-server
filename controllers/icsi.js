@@ -1,6 +1,7 @@
 const { error } = require('../utils/logger');
 const ICSI = require('../models/icsi.js');
 const Embryo = require('../models/embryo.js');
+const { getItem } = require('../utils/mongoose');
 const { deleteItem } = require('../utils/mongoose');
 const { cleanQuery } = require('../utils/helpers.js');
 
@@ -36,7 +37,7 @@ exports.getAllICSI = async (req, res, next) => {
   try {
     let container, tube;
 
-    const { limit, page, sortBy, sortDesc, query } = cleanQuery(req);
+    const { options, limit, page, sortBy, sortDesc, query } = cleanQuery(req);
 
     if (query.container) {
       container = query.container;
@@ -46,28 +47,18 @@ exports.getAllICSI = async (req, res, next) => {
       tube = query.tube;
       delete query.tube;
     }
-    await ICSI.find(query)
-      .skip((limit * page) - limit)
-      .limit(limit)
-      .sort({ [sortBy]: sortDesc })
-      .exec((err, icsis) => {
-        if (err) {
-          return next({ statusCode: 400, ...err });
-        }
-        ICSI.countDocuments(query)
-          .exec((err, total) => {
-            if (err) {
-              return next({ statusCode: 400, ...err });
-            }
-            if (sortBy && sortBy === 'amount') {
-              icsis = icsis.sort(icsi => icsi.embryos.length * -sortDesc);
-            }
-            return res.status(200).json({
-              icsis: icsis.filter(icsi => (!container || icsi.embryos[0].location.container._id == container) && (!tube || icsi.embryos[0].location.tube == tube)),
-              total
-            });
-          });
-      });
+    let [icsis, total] = await Promise.all([
+      getItem(ICSI, query, options),
+      ICSI.countDocuments(query),
+    ]);
+
+    if (sortBy && sortBy === 'amount') {
+      icsis = icsis.sort(icsi => icsi.embryos.length * -sortDesc);
+    }
+    return res.status(200).json({
+      icsis: icsis.filter(icsi => (!container || icsi.embryos[0].location.container._id == container) && (!tube || icsi.embryos[0].location.tube == tube)),
+      total
+    });
   } catch (err) {
     return next(err);
   }
@@ -76,24 +67,15 @@ exports.getAllICSI = async (req, res, next) => {
 //Get all Embryos
 exports.getAllEmbryos = async (req, res, next) => {
   try {
-    const { limit, page, sortBy, sortDesc } = cleanQuery(req);
+    const { options, query } = cleanQuery(req);
 
-    await Embryo.find(req.query)
-      .skip((limit * page) - limit)
-      .limit(limit)
-      .sort({ [sortBy]: sortDesc })
-      .exec((err, embryos) => {
-        if (err) {
-          return next({ statusCode: 400, ...err });
-        }
-        Embryo.countDocuments(req.query)
-          .exec((err, total) => {
-            if (err) {
-              return next({ statusCode: 400, ...err });
-            }
-            return res.status(200).json({ embryos, total });
-          });
-      });
+    const [embryos, total] = await Promise.all([
+      getItem(Embryo, query, options),
+      Embryo.countDocuments(req.query),
+    ]);
+
+    return res.status(200).json({ embryos, total });
+
   } catch (err) {
     return next(err);
   }
