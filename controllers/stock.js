@@ -196,14 +196,23 @@ exports.getStockModById = async (req, res, next) => {
 exports.getStockMod = async (req, res, next) => {
   try {
     const { options, query } = cleanQuery(req);
-    const { from, to, out } = query;
-    const mods = await getItem(StockModification, out !== undefined ? {
-      type: { $ne: modificationTypes.BUY }, createdAt: {
+    const { from, to, out, ...rest } = query;
+    const mongoQuery = out !== undefined ? {
+      type: { $ne: modificationTypes.BUY },
+      createdAt: {
         $gte: new Date(from ? from : 0),
         $lte: to ? new Date(to) : new Date()
-      }
-    } : {}, options);
-    res.status(200).json(mods);
+      },
+      ...rest
+    } : {
+      createdAt: {
+        $gte: new Date(from ? from : 0),
+        $lte: to ? new Date(to) : new Date()
+      },
+      ...rest
+    }
+    const [mods, total] = await Promise.all([getItem(StockModification, mongoQuery, options), StockModification.countDocuments(mongoQuery)]);
+    res.status(200).json({ mods, total });
   } catch (e) {
     next(e);
   }
