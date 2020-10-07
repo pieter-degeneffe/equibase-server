@@ -25,3 +25,12 @@ exports.searchProduct = async (req, res, next) => {
   }
 };
 
+exports.searchProduct = async (req, res, next) => {
+  try {
+    const result = await Horse.fuzzySearch(req.params.searchValue);
+    res.status(200).send(result);
+  } catch (err) {
+    return next(err);
+  }
+};
+

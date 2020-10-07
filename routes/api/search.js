@@ -20,6 +20,23 @@ const searchController = require('../../controllers/search.js');
 router.get('/product/:searchValue', searchController.searchProduct);
 /**
  * @swagger
+ * /search/horse/{searchValue}:
+ *    get:
+ *      summary: Search for a horse
+ *      tags: [Search]
+ *      parameters:
+ *        - in: path
+ *          name: searchValue
+ *          schema:
+ *            type: string
+ *          required: true
+ *      responses:
+ *        "200":
+ *          description: An array of Horses
+ */
+router.get('/horse/:searchValue', searchController.searchHorse);
+/**
+ * @swagger
  * /search/{searchValue}:
  *    get:
  *      summary: Search for customers and/or horses
