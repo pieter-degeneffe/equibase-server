@@ -47,13 +47,15 @@ exports.getExpiredStock = async (req, res, next) => {
 
 exports.getStockById = async (req, res, next) => {
   try {
-    const { limit, page, sortBy, sortDesc, query } = cleanQuery(req);
-    const [batches, total] = await Promise.all([
-      ProductBatch.find({ product: req.params.id }).skip((limit * page) - limit).limit(limit).sort({ [sortBy]: sortDesc }),
-      ProductBatch.countDocuments({ product: req.params.id }),
+    const { options, query } = cleanQuery(req);
+    const [product, batches, total] = await Promise.all([
+      getItemById(Product, req.params.id),
+      getItem(ProductBatch,{ ...query, product: req.params.id }, options),
+      ProductBatch.countDocuments({ ...query, product: req.params.id }),
     ]);
 
     res.status(200).json({
+      product,
       batches,
       total
     });
