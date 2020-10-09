@@ -55,9 +55,9 @@ exports.getStockById = async (req, res, next) => {
     ]);
 
     res.status(200).json({
-      product:await getStockForProduct(product),
+      product: await getStockForProduct(product),
       batches,
-      total
+      total,
     });
   } catch (err) {
     return next(err);

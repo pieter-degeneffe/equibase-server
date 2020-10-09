@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const mongoose_fuzzy_searching = require('mongoose-fuzzy-searching');
 const { productTypes, taxes } = require('../../consts');
+const ProductBatch = require('./productBatch.js');
+const { getItem } = require('../../utils/mongoose');
 
 let productSchema = new Schema({
   name: {
@@ -44,6 +46,16 @@ let productSchema = new Schema({
     maxlength: [64, 'Max length is 64 characters'],
   },
 }, { timestamps: true });
+
+productSchema.method('getStock', async function () {
+  const batches = await getItem(ProductBatch, { product: this._id });
+  const stock = batches.reduce((total, cur) => cur.active ? ({
+    remaining: total.remaining + cur.remainingAmount,
+    value: total.value + cur.sellingPrice
+  }) : total, { remaining: 0, value: 0 });
+  const product = this.toObject({ virtuals: true });
+  return { ...product, ...stock };
+});
 
 productSchema.plugin(mongoose_fuzzy_searching, { fields: ['name'] });
 

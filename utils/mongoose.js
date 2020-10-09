@@ -1,4 +1,5 @@
 const ProductBatch = require('../models/stock/productBatch.js');
+const Product = require('../models/stock/product.js');
 
 exports.deleteItem = async (model, id) => {
   const item = await model.findByIdAndDelete(id);
@@ -36,11 +37,4 @@ exports.updateItemById = async (model, id, item) => {
   return item;
 };
 
-exports.getStockForProduct = async (product) => {
-  const batches = await this.getItem(ProductBatch, { product: product._id });
-  return {
-    ...product.toObject(),
-    remaining: batches.reduce((total, cur) => cur.active ? total + cur.remainingAmount : total, 0),
-    value: batches.reduce((total, cur) => cur.active ? total + cur.sellingPrice : total, 0),
-  };
-};
+exports.getStockForProduct = async (product) => await product.getStock();

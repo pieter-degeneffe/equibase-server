@@ -22,6 +22,7 @@ router.get('/product', controller.getProductConfig);
  *      responses:
  *        "200":
  *          description: config needed to create a StockModification
- */router.get('/mod', controller.getStockModConfig);
+ */
+router.get('/mod', controller.getStockModConfig);
 
  module.exports = router;
