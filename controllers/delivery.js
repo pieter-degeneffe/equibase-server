@@ -20,12 +20,12 @@ exports.addDeliveries = async (req, res, next) => {
     const { body } = response;
     const result = await xml2js(body);
     const { deliveries: { delivery } } = await xml2js(result['soap:Envelope']['soap:Body'][0].GetDeliveriesResponse[0].GetDeliveriesResult[0]);
-    const products = groupBy(flatten(delivery.map(prod => prod.product.map(pr => {
+    const deliveries = groupBy(flatten(delivery.map(prod => prod.product.map(pr => {
       const product = {};
       Object.keys(pr).forEach(key => product[key] = pr[key][0]);
       return product;
     }))),'deliverydate');
-    res.send({ products });
+    res.json({ deliveries });
   } catch (e) {
     next(e);
   }

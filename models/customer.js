@@ -13,7 +13,6 @@ let contactSchema = new Schema({
   last_name: {
     type: String,
     trim: true,
-    required: true,
     required: [true, 'Last name of contact is required'],
     maxlength: [64, 'Max length is 64 characters'],
     match: [/^[\w \.'-]+$/, 'Please fill a valid last name']
