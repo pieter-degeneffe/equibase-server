@@ -2,6 +2,7 @@ const { error } = require('../utils/logger');
 const Customer = require('../models/customer.js');
 const Horse = require('../models/horse.js');
 const Embryo = require('../models/embryo.js');
+const { cleanQuery } = require('../utils/helpers');
 const { getItem } = require('../utils/mongoose');
 const { updateItemById } = require('../utils/mongoose');
 const { getItemById } = require('../utils/mongoose');
@@ -21,8 +22,9 @@ exports.createCustomer = async (req, res, next) => {
 //Get all Customers
 exports.getAllCustomers = async (req, res, next) => {
   try {
-    const customers = await Customer.find({});
-    res.status(200).send(customers);
+    const { options, query } = cleanQuery(req);
+    const [customers, total] = await Promise.all([getItem(Customer, query, options), Customer.countDocuments(query)]);
+    res.status(200).json({ customers, total });
   } catch (err) {
     return next(err);
   }
