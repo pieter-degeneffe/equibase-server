@@ -99,7 +99,11 @@ exports.deleteContact = async (req, res, next) => {
     if (customer) {
       res.status(200).send(`The contact was successfully removed`);
     } else {
-      throw { statusCode: 404, message: `Customer with id ${ req.params.customerId } doesn't exist`, status: 'Not Found' };
+      throw {
+        statusCode: 404,
+        message: `Customer with id ${ req.params.customerId } doesn't exist`,
+        status: 'Not Found'
+      };
     }
   } catch (err) {
     return next(err);
@@ -119,16 +123,27 @@ exports.getCustomerSearch = async (req, res, next) => {
 //Get the horses of a customer
 exports.getHorsesOfCustomer = async (req, res, next) => {
   try {
-    const horsesByCustomer = await getItem(Horse, { owner: req.params.customerId });
-    res.status(200).send(horsesByCustomer);
+    const { options, query, req } = cleanQuery(req);
+    query.owner = req.params.customerId;
+    const [horses, total] = await Promise.all([
+      getItem(Horse, query, options),
+      Horse.countDocuments(query),
+    ]);
+    res.status(200).json({ horses, total });
   } catch (err) {
     next(err);
   }
-};
+}
+;
 exports.getEmbryosOfCustomer = async (req, res, next) => {
   try {
-    const embryos = await getItem(Embryo,{ ...req.query, owner: req.params.customerId })
-    return res.json({ embryos });
+    const { options, query, req } = cleanQuery(req);
+    query.owner = req.params.customerId;
+    const embryos = await Promise.all([
+      getItem(Embryo, query, options),
+      Embryo.countDocuments(query),
+    ]);
+    return res.json({ embryos, total });
   } catch (e) {
     return next(e);
   }
