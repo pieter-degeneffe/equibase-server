@@ -140,7 +140,7 @@ exports.getEmbryosOfCustomer = async (req, res, next) => {
   try {
     const { options, query } = cleanQuery(req);
     query.owner = req.params.customerId;
-    const embryos = await Promise.all([
+    const [embryos, total] = await Promise.all([
       getItem(Embryo, query, options),
       Embryo.countDocuments(query),
     ]);
