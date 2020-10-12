@@ -123,7 +123,7 @@ exports.getCustomerSearch = async (req, res, next) => {
 //Get the horses of a customer
 exports.getHorsesOfCustomer = async (req, res, next) => {
   try {
-    const { options, query, req } = cleanQuery(req);
+    const { options, query } = cleanQuery(req);
     query.owner = req.params.customerId;
     const [horses, total] = await Promise.all([
       getItem(Horse, query, options),
@@ -131,6 +131,7 @@ exports.getHorsesOfCustomer = async (req, res, next) => {
     ]);
     res.status(200).json({ horses, total });
   } catch (err) {
+    console.log('Arne: err= ', err);
     next(err);
   }
 }
