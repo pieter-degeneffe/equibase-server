@@ -138,7 +138,7 @@ exports.getHorsesOfCustomer = async (req, res, next) => {
 ;
 exports.getEmbryosOfCustomer = async (req, res, next) => {
   try {
-    const { options, query, req } = cleanQuery(req);
+    const { options, query } = cleanQuery(req);
     query.owner = req.params.customerId;
     const embryos = await Promise.all([
       getItem(Embryo, query, options),
