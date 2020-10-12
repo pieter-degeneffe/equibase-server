@@ -1,21 +1,19 @@
 const Location = require('../models/location.js');
 const Horse = require('../models/horse.js');
+const { cleanQuery } = require('../utils/helpers');
+const { getItem } = require('../utils/mongoose');
 const { deleteItem } = require('../utils/mongoose');
 
 //HELPER - Get amount of horses in multiple locations
 const getHorsesInMultipleLocations = async locations => {
   for (const location of locations) {
-    const horses = await Horse.find({ location: location._id }).lean();
-    location.horses = horses;
+    location.horses = await Horse.find({ location: location._id }).lean();
   }
   return locations;
 };
 
 //HELPER - Get amount of horses in single location ID
-const getHorsesInLocation = async locationId => {
-  const horses = await Horse.find({ location: locationId }).lean();
-  return horses;
-};
+const getHorsesInLocation = async locationId => Horse.find({ location: locationId }).lean();
 
 //HELPER - Get amount of places in single location ID
 const getPlacesInLocation = async locationId => {
@@ -39,9 +37,12 @@ exports.createLocation = async (req, res, next) => {
 //Get all locations
 exports.getAllLocations = async (req, res, next) => {
   try {
-    const locations = await Location.find({}, null, { sort: { stable: 1 } }).lean();
+    const {options, query} = cleanQuery(req);
+    const [locations, total] = await Promise.all([
+      Location.find(query, null, { sort: { stable: 1 }, ...options }).lean(),
+      Location.countDocuments(query)])
     await getHorsesInMultipleLocations(locations);
-    res.status(201).json(locations);
+    res.json({ locations, total });
   } catch (err) {
     return next(err);
   }
