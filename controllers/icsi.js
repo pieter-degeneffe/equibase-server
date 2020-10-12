@@ -1,6 +1,7 @@
 const { error } = require('../utils/logger');
 const ICSI = require('../models/icsi.js');
 const Embryo = require('../models/embryo.js');
+const { updateItemById } = require('../utils/mongoose');
 const { getItem } = require('../utils/mongoose');
 const { deleteItem } = require('../utils/mongoose');
 const { cleanQuery } = require('../utils/helpers.js');
@@ -147,12 +148,16 @@ exports.transferEmbryo = async (req, res, next) => {
 exports.exportEmbryo = async (req, res, next) => {
   try {
     const { embryoId, customerId, exportDate, inHouse = true } = req.body;
-    const embryo = await Embryo.findByIdAndUpdate(embryoId, {
+    const fieldsToUpdate = {
       owner: customerId,
       date_exported: exportDate,
       in_house: inHouse,
-      active: inHouse ? active : false,
-    }).exec();
+    };
+
+    const embryo = await updateItemById(Embryo, embryoId, inHouse ? fieldsToUpdate : {
+      ...fieldsToUpdate,
+      active: false
+    });
     res.json(embryo);
   } catch (e) {
     return next(e);
