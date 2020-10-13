@@ -36,17 +36,11 @@ exports.getAllSemenCollections = async (req,res,next) => {
     console.log(req.query);
     if(req.query.dates) {
       console.log(req.query.dates)
-      populateModifications.match = {"createdAt": {"$lt": req.query.dates[1]}} //modifications created after start date
-      req.query.production_date = {$lt: req.query.dates[1]}; //Semen collections with a production date after start date
+      // populateModifications.match = {"createdAt": {"$gte": req.query.dates[0]}} //modifications created after start date
+      req.query.production_date = {$gte:req.query.dates[0], $lt: req.query.dates[1]}; //Semen collections with a production date after start date
       delete req.query.dates;
     }
-    // if(req.query.createdBefore && req.query.createdAfter) {
-    //   //populateModifications.match = {"createdAt": {"$gte": req.query.createdAfter, "$lt": req.query.createdBefore}}
-    //   populateModifications.match = {"createdAt": {"$lt": req.query.createdBefore}}
-    //   req.query.createdAt = {$lt: req.query.createdBefore};
-    //   delete req.query.createdBefore;
-    //   delete req.query.createdAfter;
-    // }
+
     await SemenCollection.find(req.query)
     .populate('stallion')
     .populate(populateModifications)
