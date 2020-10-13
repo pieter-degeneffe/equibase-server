@@ -80,7 +80,7 @@ exports.updateLocation = async (req, res, next) => {
 //Delete a location
 exports.deleteLocation = async (req, res, next) => {
   try {
-    await deleteItem(Location, req.params.id);
+    await deleteItem(Location, req.params.locationId);
     res.status(200).send(`The location was successfully deleted`);
   } catch (err) {
     return next(err);
