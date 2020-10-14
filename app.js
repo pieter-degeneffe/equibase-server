@@ -59,6 +59,8 @@ const config = require('./routes/api/config');
 app.use('/api/config', config);
 const delivery = require('./routes/api/delivery');
 app.use('/api/delivery', delivery);
+const protocol = require('./routes/api/protocol');
+app.use('/api/protocol', protocol);
 
 app.use(express.static('public'));
 
