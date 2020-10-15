@@ -30,7 +30,7 @@ let protocolSchema = new Schema({
     },
     fixedPrice: {
         type: Boolean,
-        required: true,
+        default: false
     },
     tax: {
         type: String,
