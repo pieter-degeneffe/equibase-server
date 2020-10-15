@@ -40,6 +40,14 @@ let protocolSchema = new Schema({
     products: [{product: {type: mongoose.Schema.ObjectId, ref: 'Product'}, amount: {type: Number}}]
 }, {timestamps: true});
 
+const autoPopulate = function (next) {
+    this.populate('products.product');
+    next();
+};
+
 protocolSchema.plugin(mongoose_fuzzy_searching, {fields: ['name.nl']});
 
+protocolSchema.pre('find', autoPopulate);
+protocolSchema.pre('findOne', autoPopulate);
+protocolSchema.pre('findByIdAndUpdate', autoPopulate);
 module.exports = mongoose.model('Protocol', protocolSchema);
